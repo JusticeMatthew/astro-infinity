@@ -1,4 +1,5 @@
 import type { Component } from "solid-js";
+import type { DotPosition } from "~/lib/layerHelpers";
 import { Show } from "solid-js";
 
 import { LayerDots } from "./LayerDots";
@@ -10,6 +11,7 @@ interface SpaceLayerProps {
   color: string;
   displayMode: "dots" | "lines";
   dotSize: number;
+  dotPositions: DotPosition[];
   lineWidth: number;
   cornerRadius: number;
 }
@@ -34,7 +36,7 @@ export const SpaceLayer: Component<SpaceLayerProps> = (props) => {
         <LayerDots
           color={props.color}
           dotSize={props.dotSize}
-          cornerRadius={props.cornerRadius}
+          dotPositions={props.dotPositions}
         />
       </Show>
     </div>

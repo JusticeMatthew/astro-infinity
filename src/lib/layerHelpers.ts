@@ -1,5 +1,40 @@
 import type { INFINITY_SPACE_CONFIG } from "~/constants/config";
 
+export interface DotPosition {
+  x: number;
+  y: number;
+}
+
+export const generateDotPositions = (
+  width: number,
+  height: number,
+  spacing: number,
+): DotPosition[] => {
+  if (width <= 0 || height <= 0 || spacing <= 0) return [];
+
+  const positions: DotPosition[] = [
+    { x: 0, y: 0 },
+    { x: 100, y: 0 },
+    { x: 100, y: 100 },
+    { x: 0, y: 100 },
+  ];
+
+  const hCount = Math.max(0, Math.round(width / spacing) - 1);
+  const vCount = Math.max(0, Math.round(height / spacing) - 1);
+
+  for (let i = 1; i <= hCount; i++) {
+    const x = (i / (hCount + 1)) * 100;
+    positions.push({ x, y: 0 }, { x, y: 100 });
+  }
+
+  for (let i = 1; i <= vCount; i++) {
+    const y = (i / (vCount + 1)) * 100;
+    positions.push({ x: 0, y }, { x: 100, y });
+  }
+
+  return positions;
+};
+
 const LINEAR_FADE_IN_END = 0.1;
 const LINEAR_FADE_OUT_START = 0.8;
 

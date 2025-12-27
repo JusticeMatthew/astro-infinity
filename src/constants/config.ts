@@ -53,7 +53,7 @@ export const INFINITY_SPACE_CONFIG = configSchema.parse({
   transitionDuration: 100,
   flowSpeed: 10000,
   dotSize: 6,
-  dotPixelSpacing: 100,
+  dotPixelSpacing: 80,
   lineWidth: 4,
   lineCornerRadius: 12,
   cardLayer: 8,

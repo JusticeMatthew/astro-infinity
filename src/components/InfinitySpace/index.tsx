@@ -11,6 +11,7 @@ import { createIconAnimations } from "~/lib/composables/createIconAnimations";
 import { createWaveSystem } from "~/lib/composables/createWaveSystem";
 import { updateFavicon } from "~/lib/favicon";
 import {
+  generateDotPositions,
   getEchoOpacity,
   getFixedLayerProgress,
   getLinearLayerSettings,
@@ -161,6 +162,14 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
     Array.from({ length: currentLayerCount() }, (_, i) => i),
   );
 
+  const dotPositions = createMemo(() =>
+    generateDotPositions(
+      containerSize().width,
+      containerSize().height,
+      CONFIG.dotPixelSpacing,
+    ),
+  );
+
   const getIconLayer = (depthRatio: number) =>
     Math.round(depthRatio * currentLayerCount());
 
@@ -215,6 +224,7 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
                   color={color()}
                   displayMode={currentDisplayMode()}
                   dotSize={CONFIG.dotSize}
+                  dotPositions={dotPositions()}
                   lineWidth={CONFIG.lineWidth}
                   cornerRadius={CONFIG.lineCornerRadius}
                 />

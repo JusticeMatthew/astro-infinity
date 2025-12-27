@@ -9,7 +9,7 @@ interface LayerLinesProps {
 export const LayerLines: Component<LayerLinesProps> = (props) => {
   return (
     <div
-      class="absolute inset-0"
+      class="absolute inset-0 saturate-75"
       style={{
         border: `${props.lineWidth}px solid ${props.color}`,
         "border-radius": `${props.cornerRadius}px`,
