@@ -6,7 +6,7 @@ import { hueReady } from "~/lib/store";
 import { DisplayMode } from "./control-modules/DisplayMode";
 import { DownloadButton } from "./control-modules/DownloadButton";
 import { HueSlider } from "./control-modules/HueSlider";
-import { LayerCount } from "./control-modules/LayerCount";
+import { LayerCountSlider } from "./control-modules/LayerCountSlider";
 import { MotionToggle } from "./control-modules/MotionToggle";
 import { RandomColor } from "./control-modules/RandomColor";
 
@@ -19,7 +19,7 @@ export const Header: Component = () => {
         class={`flex h-8 items-center justify-evenly gap-12 transition-opacity duration-300 ${isHueReady() ? "opacity-100" : "opacity-0"}`}>
         <RandomColor />
         <HueSlider />
-        <LayerCount />
+        <LayerCountSlider />
         <DisplayMode />
         <MotionToggle />
         <DownloadButton />

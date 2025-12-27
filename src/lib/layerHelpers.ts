@@ -20,13 +20,6 @@ type LayerSettingsConfig = Pick<
   icons?: { size: number };
 };
 
-interface IconPhase {
-  xPhase: number;
-  yPhase: number;
-  xFreq: number;
-  yFreq: number;
-}
-
 export interface DotPosition {
   x: number;
   y: number;
@@ -38,8 +31,10 @@ export const getLayerSettings = (
   minIconScaleFactor = DEFAULT_MIN_ICON_SCALE,
   maxIconScaleFactor = DEFAULT_MAX_ICON_SCALE,
 ): LayerSettings => {
+  const easedProgress = smoothstep(progress);
+
   const scale =
-    config.bufferScale - progress * (config.bufferScale - config.minScale);
+    config.bufferScale - easedProgress * (config.bufferScale - config.minScale);
 
   let opacity: number;
   if (progress < OPACITY_FADE_IN_THRESHOLD) {
@@ -54,7 +49,8 @@ export const getLayerSettings = (
 
   const baseIconSize = config.icons?.size ?? 82;
   const scaleFactor =
-    maxIconScaleFactor - progress * (maxIconScaleFactor - minIconScaleFactor);
+    maxIconScaleFactor -
+    easedProgress * (maxIconScaleFactor - minIconScaleFactor);
   const iconSize = baseIconSize * scaleFactor;
 
   return { scale, opacity, iconSize };
@@ -78,17 +74,6 @@ export const smoothstep = (t: number): number => {
   return t * t * (3 - 2 * t);
 };
 
-export const getGlideOffset = (
-  time: number,
-  phase: IconPhase,
-  movementIntensity: number,
-): { x: number; y: number } => {
-  return {
-    x: Math.sin(time * phase.xFreq + phase.xPhase) * movementIntensity,
-    y: Math.cos(time * phase.yFreq + phase.yPhase) * movementIntensity,
-  };
-};
-
 export const getEchoOpacity = (
   layerProgress: number,
   slotProgress: number,
@@ -98,10 +83,16 @@ export const getEchoOpacity = (
   const oneSlotDistance = 1 / layerCount;
 
   if (distance < oneSlotDistance) {
-    const t = distance / oneSlotDistance;
-    return smoothstep(t);
+    return smoothstep(distance / oneSlotDistance);
   }
   return 1;
+};
+
+export const isLayerDeeper = (
+  layerProgress: number,
+  slotProgress: number,
+): boolean => {
+  return layerProgress > slotProgress;
 };
 
 export const getSpinRotation = (
@@ -113,13 +104,6 @@ export const getSpinRotation = (
   const direction = clockwise ? 1 : -1;
   const eased = smoothstep(progress);
   return eased * maxAngle * direction;
-};
-
-export const isLayerDeeper = (
-  layerProgress: number,
-  slotProgress: number,
-): boolean => {
-  return layerProgress > slotProgress;
 };
 
 const addEdgePositions = (

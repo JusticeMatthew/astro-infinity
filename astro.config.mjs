@@ -18,7 +18,7 @@ export default defineConfig({
     fonts: [
       {
         provider: fontProviders.google(),
-        name: "Poppins",
+        name: "Space Grotesk",
         cssVariable: "--astro-font",
         weights: [400, 700],
         styles: ["normal"],

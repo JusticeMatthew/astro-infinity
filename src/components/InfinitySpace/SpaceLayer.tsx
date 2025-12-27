@@ -33,7 +33,6 @@ export const SpaceLayer: Component<SpaceLayerProps> = (props) => {
       style={{
         transform: `scale3d(${layer().scale}, ${layer().scale}, 1)`,
         opacity: layer().opacity,
-        transition: `transform ${props.config.transitionDuration}ms ease-out`,
       }}>
       <Show
         when={props.displayMode === "dots"}

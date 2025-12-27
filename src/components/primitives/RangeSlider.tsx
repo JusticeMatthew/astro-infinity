@@ -18,9 +18,6 @@ interface RangeSliderProps {
 export const RangeSlider: Component<RangeSliderProps> = (props) => {
   const colors = useHueColors();
 
-  const displayValue = () =>
-    props.formatValue ? props.formatValue(props.value) : String(props.value);
-
   const handleInput = (e: InputEvent) => {
     const target = e.target as HTMLInputElement;
     props.onChange(parseInt(target.value, 10));
@@ -30,7 +27,9 @@ export const RangeSlider: Component<RangeSliderProps> = (props) => {
     <div
       class="flex h-full grow items-center gap-1.5"
       style={{ color: colors.dark(80) }}>
-      <span class="w-12 text-right font-medium">{displayValue()}</span>
+      <span class="w-12 text-right font-medium">
+        {props.formatValue ? props.formatValue(props.value) : props.value}
+      </span>
       <Icon
         name={props.icon}
         class="size-5 shrink-0"

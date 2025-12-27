@@ -1,10 +1,6 @@
 import { createSignal } from "solid-js";
 
-import {
-  getGlideOffset as getGlideOffsetFromService,
-  getRandomSpinInterval,
-  getSpinRotation,
-} from "~/lib/layerHelpers";
+import { getRandomSpinInterval, getSpinRotation } from "~/lib/layerHelpers";
 
 interface IconPhase {
   xPhase: number;
@@ -70,6 +66,12 @@ export const createIconAnimations = (options: CreateIconAnimationsOptions) => {
     },
   );
 
+  const cachedGlideOffsets = Array.from({ length: options.iconCount }, () => ({
+    x: 0,
+    y: 0,
+  }));
+  const cachedRotations = Array.from({ length: options.iconCount }, () => 0);
+
   const selectNextSpinIcon = (): number => {
     const available = Array.from(
       { length: options.iconCount },
@@ -99,26 +101,42 @@ export const createIconAnimations = (options: CreateIconAnimationsOptions) => {
   };
 
   const getGlideOffset = (iconIndex: number) => {
-    const phase = iconPhases[iconIndex];
-    if (!options.canAnimate() || !phase) {
-      return { x: 0, y: 0 };
-    }
-    return getGlideOffsetFromService(
-      glideTime(),
-      phase,
-      options.glideConfig.movementIntensity,
-    );
+    return cachedGlideOffsets[iconIndex] ?? { x: 0, y: 0 };
   };
 
   const getIconRotation = (iconIndex: number): number => {
-    if (!options.canAnimate()) {
-      return 0;
-    }
+    return cachedRotations[iconIndex] ?? 0;
+  };
+
+  const updateCachedValues = () => {
+    const time = glideTime();
+    const intensity = options.glideConfig.movementIntensity;
+    const animating = options.canAnimate();
     const activeIcon = spinIconIndex();
-    if (activeIcon === null || activeIcon !== iconIndex) {
-      return 0;
+    const progress = spinProgress();
+    const clockwise = spinClockwise();
+
+    for (let i = 0; i < options.iconCount; i++) {
+      const offset = cachedGlideOffsets[i];
+      const phase = iconPhases[i];
+
+      if (!animating || !offset || !phase) {
+        if (offset) {
+          offset.x = 0;
+          offset.y = 0;
+        }
+        cachedRotations[i] = 0;
+        continue;
+      }
+
+      offset.x = Math.sin(time * phase.xFreq + phase.xPhase) * intensity;
+      offset.y = Math.cos(time * phase.yFreq + phase.yPhase) * intensity;
+
+      cachedRotations[i] =
+        activeIcon === i
+          ? getSpinRotation(progress, SPIN_ROTATIONS, clockwise)
+          : 0;
     }
-    return getSpinRotation(spinProgress(), SPIN_ROTATIONS, spinClockwise());
   };
 
   const updateAnimations = (deltaTime: number, currentTime: number) => {
@@ -146,6 +164,8 @@ export const createIconAnimations = (options: CreateIconAnimationsOptions) => {
       setSpinProgress(0);
       setSpinClockwise(lastClockwise);
     }
+
+    updateCachedValues();
   };
 
   return {

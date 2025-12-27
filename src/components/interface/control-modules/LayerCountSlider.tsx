@@ -5,7 +5,7 @@ import { layerCount, setLayerCount } from "~/lib/store";
 
 import { RangeSlider } from "~/components/primitives/RangeSlider";
 
-export const LayerCount: Component = () => {
+export const LayerCountSlider: Component = () => {
   const count = useStore(layerCount);
 
   return (

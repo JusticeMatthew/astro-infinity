@@ -92,7 +92,12 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
   const { containerSize, setContainerRef } = createAnimationLoop({
     canAnimate,
     onFrame: (deltaTime, currentTime) => {
-      const increment = deltaTime / CONFIG.flowSpeed;
+      const layerRatio = Math.max(
+        1,
+        currentLayerCount() / CONFIG.baseLayerCount,
+      );
+      const adjustedFlowSpeed = CONFIG.flowSpeed * layerRatio;
+      const increment = deltaTime / adjustedFlowSpeed;
       setLayerProgresses((prev) => prev.map((p) => (p + increment) % 1));
       waveSystem.advanceWaves(deltaTime);
       iconAnimations.updateAnimations(deltaTime, currentTime);
@@ -163,23 +168,21 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
     ),
   );
 
+  const getIconLayer = (depthRatio: number) =>
+    Math.round(depthRatio * currentLayerCount());
+
   const getIconEchoesForLayer = (layerProgress: number) => {
+    const layerCount = currentLayerCount();
     return CONFIG.iconPositions
       .map((iconConfig: IconPosition, iconIndex: number) => {
-        const slotProgress = getFixedLayerProgress(
-          iconConfig.layer,
-          CONFIG.layerCount,
-        );
+        const iconLayer = getIconLayer(iconConfig.depthRatio);
+        const slotProgress = getFixedLayerProgress(iconLayer, layerCount);
         if (!isLayerDeeper(layerProgress, slotProgress)) return null;
 
         return {
           icon: iconConfig.icon,
           position: { top: iconConfig.top, left: iconConfig.left },
-          opacity: getEchoOpacity(
-            layerProgress,
-            slotProgress,
-            CONFIG.layerCount,
-          ),
+          opacity: getEchoOpacity(layerProgress, slotProgress, layerCount),
           glideOffset: iconAnimations.getGlideOffset(iconIndex),
           rotation: iconAnimations.getIconRotation(iconIndex),
         };
@@ -202,40 +205,29 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
                 ? (layerProgresses()[layerIndex] ?? 0)
                 : getFixedLayerProgress(layerIndex, currentLayerCount());
             const color = () => waveSystem.getLayerColor(layerProgress());
-            return (
-              <SpaceLayer
-                layerProgress={layerProgress()}
-                color={color()}
-                displayMode={currentDisplayMode()}
-                config={LAYER_CONFIG}
-                dotPositions={dotPositions()}
-                containerWidth={containerSize().width}
-                containerHeight={containerSize().height}
-              />
-            );
-          }}
-        </For>
-
-        <For each={layers()}>
-          {(layerIndex) => {
-            const layerProgress = () =>
-              canAnimate()
-                ? (layerProgresses()[layerIndex] ?? 0)
-                : getFixedLayerProgress(layerIndex, currentLayerCount());
-            const color = () => waveSystem.getLayerColor(layerProgress());
-            const zIndex = () =>
-              Math.round((1 - layerProgress()) * CONFIG.layerCount);
+            const zIndex = () => currentLayerCount() - layerIndex;
             const iconEchoes = createMemo(() =>
               getIconEchoesForLayer(layerProgress()),
             );
             return (
-              <IconEchoLayer
-                layerProgress={layerProgress()}
-                color={color()}
-                icons={iconEchoes()}
-                zIndex={zIndex()}
-                config={ICON_LAYER_CONFIG}
-              />
+              <>
+                <SpaceLayer
+                  layerProgress={layerProgress()}
+                  color={color()}
+                  displayMode={currentDisplayMode()}
+                  config={LAYER_CONFIG}
+                  dotPositions={dotPositions()}
+                  containerWidth={containerSize().width}
+                  containerHeight={containerSize().height}
+                />
+                <IconEchoLayer
+                  layerProgress={layerProgress()}
+                  color={color()}
+                  icons={iconEchoes()}
+                  zIndex={zIndex()}
+                  config={ICON_LAYER_CONFIG}
+                />
+              </>
             );
           }}
         </For>
@@ -243,27 +235,25 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
 
       <For each={CONFIG.iconPositions}>
         {(iconConfig, iconIndex) => {
-          const slotProgress = getFixedLayerProgress(
-            iconConfig.layer,
-            CONFIG.layerCount,
-          );
-          const layer = getLayerSettings(slotProgress, CONFIG);
-          const color = () => waveSystem.getLayerColor(slotProgress);
-          const zIndex = CONFIG.layerCount - iconConfig.layer;
+          const iconLayer = () => getIconLayer(iconConfig.depthRatio);
+          const slotProgress = () =>
+            getFixedLayerProgress(iconLayer(), currentLayerCount());
+          const layer = () => getLayerSettings(slotProgress(), CONFIG);
+          const color = () => waveSystem.getLayerColor(slotProgress());
+          const zIndex = () => currentLayerCount() - iconLayer();
           return (
             <div
               class="pointer-events-none absolute inset-4 will-change-transform"
               style={{
-                transform: `translateZ(${zIndex}px) scale3d(${layer.scale}, ${layer.scale}, 1)`,
+                transform: `translateZ(${zIndex()}px) scale3d(${layer().scale}, ${layer().scale}, 1)`,
                 "transform-origin": "center",
-                opacity: layer.opacity,
-                transition: `transform ${CONFIG.transitionDuration}ms ease-out`,
+                opacity: layer().opacity,
               }}>
               <div class="relative h-full w-full">
                 <LayerIcon
                   icon={iconConfig.icon}
                   color={color()}
-                  size={layer.iconSize}
+                  size={layer().iconSize}
                   position={{ top: iconConfig.top, left: iconConfig.left }}
                   glideOffset={iconAnimations.getGlideOffset(iconIndex())}
                   rotation={iconAnimations.getIconRotation(iconIndex())}

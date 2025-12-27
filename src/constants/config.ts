@@ -21,13 +21,14 @@ const iconConfigSchema = z.object({
 const iconPositionSchema = z.object({
   key: z.string(),
   icon: z.custom<IconName>(),
-  layer: z.number().int().nonnegative(),
+  depthRatio: z.number().min(0).max(1),
   top: z.string(),
   left: z.string(),
 });
 
 const configSchema = z.object({
   layerCount: z.number().int().positive(),
+  baseLayerCount: z.number().int().positive(),
   minScale: z.number().positive(),
   bufferScale: z.number().positive(),
   perspectiveDistance: z.number().positive(),
@@ -47,6 +48,7 @@ export type IconPosition = z.infer<typeof iconPositionSchema>;
 
 export const INFINITY_SPACE_CONFIG = configSchema.parse({
   layerCount: 15,
+  baseLayerCount: 15,
   minScale: 0.3,
   bufferScale: 1.15,
   perspectiveDistance: 1000,
@@ -70,13 +72,31 @@ export const INFINITY_SPACE_CONFIG = configSchema.parse({
     },
   },
   iconPositions: [
-    { key: "topLeft", icon: "astro", layer: 5, top: "14%", left: "16%" },
-    { key: "bottomRight", icon: "solid", layer: 6, top: "80%", left: "78%" },
-    { key: "topRight", icon: "houston", layer: 10, top: "10%", left: "82%" },
+    {
+      key: "topLeft",
+      icon: "astro",
+      depthRatio: 0.33,
+      top: "14%",
+      left: "16%",
+    },
+    {
+      key: "bottomRight",
+      icon: "solid",
+      depthRatio: 0.4,
+      top: "80%",
+      left: "78%",
+    },
+    {
+      key: "topRight",
+      icon: "houston",
+      depthRatio: 0.67,
+      top: "10%",
+      left: "82%",
+    },
     {
       key: "bottomLeft",
       icon: "astronaut",
-      layer: 11,
+      depthRatio: 0.73,
       top: "90%",
       left: "12%",
     },
