@@ -1,11 +1,11 @@
 import { atom } from "nanostores";
 
 const MAX_HUE_HISTORY = 5;
-const DEFAULT_HUE = 220;
 
 export type DisplayMode = "dots" | "lines";
 
-export const accentHue = atom<number>(DEFAULT_HUE);
+export const accentHue = atom<number>(0);
+export const hueReady = atom<boolean>(false);
 export const displayMode = atom<DisplayMode>("dots");
 export const layerCount = atom<number>(15);
 export const downloadTrigger = atom<number>(0);
@@ -18,6 +18,10 @@ export const initializeRandomHue = () => {
   if (hueInitialized) return;
   hueInitialized = true;
   accentHue.set(Math.floor(Math.random() * 360));
+
+  requestAnimationFrame(() => {
+    hueReady.set(true);
+  });
 };
 
 export const setHue = (hue: number, addToHistory = false) => {

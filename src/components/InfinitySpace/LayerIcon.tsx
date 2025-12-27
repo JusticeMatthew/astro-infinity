@@ -1,5 +1,8 @@
 import type { IconName } from "~/primitives/Icon";
+import { useStore } from "@nanostores/solid";
 import { type Component } from "solid-js";
+
+import { hueReady } from "~/lib/store";
 
 import { Icon } from "~/primitives/Icon";
 
@@ -17,10 +20,11 @@ export const LayerIcon: Component<LayerIconProps> = (props) => {
   const glideX = () => props.glideOffset?.x ?? 0;
   const glideY = () => props.glideOffset?.y ?? 0;
   const rotation = () => props.rotation ?? 0;
+  const isHueReady = useStore(hueReady);
 
   return (
     <div
-      class="max-md:initial absolute max-lg:hidden max-sm:hidden"
+      class="max-md:initial absolute transition-opacity duration-300 max-lg:hidden max-sm:hidden"
       style={{
         top: props.position.top,
         left: props.position.left,
@@ -28,7 +32,7 @@ export const LayerIcon: Component<LayerIconProps> = (props) => {
         height: `${props.size}px`,
         transform: `translate3d(calc(-50% + ${glideX()}vw), calc(-50% + ${glideY()}vh), 0) rotate(${rotation()}deg)`,
         color: props.color,
-        opacity: props.opacity ?? 1,
+        opacity: isHueReady() ? (props.opacity ?? 1) : 0,
         "backface-visibility": "hidden",
         "shape-rendering": "geometricPrecision",
       }}>

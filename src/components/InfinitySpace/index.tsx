@@ -19,6 +19,7 @@ import {
   accentHue,
   displayMode as displayModeStore,
   downloadTrigger,
+  hueReady,
   initializeMotionPreference,
   initializeRandomHue,
   layerCount as layerCountStore,
@@ -66,6 +67,7 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
   const currentDownloadTrigger = useStore(downloadTrigger);
   const currentMotionEnabled = useStore(motionEnabled);
   const currentHue = useStore(accentHue);
+  const isHueReady = useStore(hueReady);
 
   const canAnimate = () => currentMotionEnabled();
 
@@ -191,7 +193,7 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
       class={clsx("absolute inset-0 overflow-hidden", props.class)}
       style={{ perspective: `${CONFIG.perspectiveDistance}px` }}>
       <div
-        class="absolute inset-0 flex items-center justify-center will-change-auto"
+        class={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 will-change-auto ${isHueReady() ? "opacity-100" : "opacity-0"}`}
         style={{ "transform-style": "preserve-3d" }}>
         <For each={layers()}>
           {(layerIndex) => {
