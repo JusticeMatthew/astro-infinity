@@ -1,59 +1,39 @@
 import type { INFINITY_SPACE_CONFIG } from "~/constants/config";
 
-const OPACITY_FADE_IN_THRESHOLD = 0.1;
-const OPACITY_FADE_OUT_START = 0.6;
-const OPACITY_FADE_OUT_DURATION = 0.4;
+const LINEAR_FADE_IN_END = 0.1;
+const LINEAR_FADE_OUT_START = 0.8;
 
-const DEFAULT_MIN_ICON_SCALE = 0.4;
-const DEFAULT_MAX_ICON_SCALE = 1.2;
-
-export interface LayerSettings {
+export interface LinearLayerSettings {
   scale: number;
   opacity: number;
-  iconSize: number;
 }
 
-type LayerSettingsConfig = Pick<
+type LinearSettingsConfig = Pick<
   typeof INFINITY_SPACE_CONFIG,
   "bufferScale" | "minScale"
-> & {
-  icons?: { size: number };
-};
+>;
 
-export interface DotPosition {
-  x: number;
-  y: number;
-}
-
-export const getLayerSettings = (
-  progress: number,
-  config: LayerSettingsConfig,
-  minIconScaleFactor = DEFAULT_MIN_ICON_SCALE,
-  maxIconScaleFactor = DEFAULT_MAX_ICON_SCALE,
-): LayerSettings => {
-  const easedProgress = smoothstep(progress);
+export const getLinearLayerSettings = (
+  position: number,
+  layerCount: number,
+  config: LinearSettingsConfig,
+): LinearLayerSettings => {
+  const progress = position / layerCount;
 
   const scale =
-    config.bufferScale - easedProgress * (config.bufferScale - config.minScale);
+    config.bufferScale - progress * (config.bufferScale - config.minScale);
 
   let opacity: number;
-  if (progress < OPACITY_FADE_IN_THRESHOLD) {
-    opacity = progress / OPACITY_FADE_IN_THRESHOLD;
-  } else if (progress > OPACITY_FADE_OUT_START) {
-    const fadeProgress =
-      (progress - OPACITY_FADE_OUT_START) / OPACITY_FADE_OUT_DURATION;
-    opacity = 1 - fadeProgress * fadeProgress;
+  if (progress < LINEAR_FADE_IN_END) {
+    opacity = progress / LINEAR_FADE_IN_END;
+  } else if (progress > LINEAR_FADE_OUT_START) {
+    opacity =
+      1 - (progress - LINEAR_FADE_OUT_START) / (1 - LINEAR_FADE_OUT_START);
   } else {
     opacity = 1;
   }
 
-  const baseIconSize = config.icons?.size ?? 82;
-  const scaleFactor =
-    maxIconScaleFactor -
-    easedProgress * (maxIconScaleFactor - minIconScaleFactor);
-  const iconSize = baseIconSize * scaleFactor;
-
-  return { scale, opacity, iconSize };
+  return { scale, opacity };
 };
 
 export const getFixedLayerProgress = (
@@ -104,34 +84,4 @@ export const getSpinRotation = (
   const direction = clockwise ? 1 : -1;
   const eased = smoothstep(progress);
   return eased * maxAngle * direction;
-};
-
-export const generateDotPositions = (
-  width: number,
-  height: number,
-  spacing: number,
-): DotPosition[] => {
-  if (width <= 0 || height <= 0 || spacing <= 0) return [];
-
-  const positions: DotPosition[] = [
-    { x: 0, y: 0 },
-    { x: 100, y: 0 },
-    { x: 100, y: 100 },
-    { x: 0, y: 100 },
-  ];
-
-  const hCount = Math.max(0, Math.round(width / spacing) - 1);
-  const vCount = Math.max(0, Math.round(height / spacing) - 1);
-
-  for (let i = 1; i <= hCount; i++) {
-    const x = (i / (hCount + 1)) * 100;
-    positions.push({ x, y: 0 }, { x, y: 100 });
-  }
-
-  for (let i = 1; i <= vCount; i++) {
-    const y = (i / (vCount + 1)) * 100;
-    positions.push({ x: 0, y }, { x: 100, y });
-  }
-
-  return positions;
 };

@@ -62,8 +62,9 @@ export const createWaveSystem = (options: CreateWaveSystemOptions) => {
     ),
   );
 
-  const advanceWaves = (deltaTime: number) => {
-    const increment = deltaTime / options.flowSpeed;
+  const advanceWaves = (deltaTime: number, layerRatio = 1) => {
+    const adjustedFlowSpeed = options.flowSpeed * layerRatio;
+    const increment = deltaTime / adjustedFlowSpeed;
 
     setWaves((prev) => {
       const updated: HueWave[] = [];

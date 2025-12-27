@@ -11,10 +11,9 @@ import { createIconAnimations } from "~/lib/composables/createIconAnimations";
 import { createWaveSystem } from "~/lib/composables/createWaveSystem";
 import { updateFavicon } from "~/lib/favicon";
 import {
-  generateDotPositions,
   getEchoOpacity,
   getFixedLayerProgress,
-  getLayerSettings,
+  getLinearLayerSettings,
   isLayerDeeper,
 } from "~/lib/layerHelpers";
 import {
@@ -33,22 +32,6 @@ import { IconEchoLayer } from "./IconEchoLayer";
 import { LayerCard } from "./LayerCard";
 import { LayerIcon } from "./LayerIcon";
 import { SpaceLayer } from "./SpaceLayer";
-
-const LAYER_CONFIG = {
-  bufferScale: CONFIG.bufferScale,
-  minScale: CONFIG.minScale,
-  transitionDuration: CONFIG.transitionDuration,
-  dotSize: CONFIG.dotSize,
-  lineWidth: CONFIG.lineWidth,
-  lineCornerRadius: CONFIG.lineCornerRadius,
-};
-
-const ICON_LAYER_CONFIG = {
-  bufferScale: CONFIG.bufferScale,
-  minScale: CONFIG.minScale,
-  transitionDuration: CONFIG.transitionDuration,
-  icons: CONFIG.icons,
-};
 
 interface InfinitySpaceProps {
   class?: string;
@@ -102,7 +85,7 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
       const adjustedFlowSpeed = CONFIG.flowSpeed * layerRatio;
       const increment = deltaTime / adjustedFlowSpeed;
       setLayerProgresses((prev) => prev.map((p) => (p + increment) % 1));
-      waveSystem.advanceWaves(deltaTime);
+      waveSystem.advanceWaves(deltaTime, layerRatio);
       iconAnimations.updateAnimations(deltaTime, currentTime);
     },
   });
@@ -156,10 +139,6 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
       }
     `;
 
-    console.log(
-      getComputedStyle(document.body).getPropertyValue("--astro-font"),
-    );
-
     const dataUrl = await toPng(containerRef, {
       pixelRatio: 2,
       backgroundColor: "#000000",
@@ -180,14 +159,6 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
 
   const layers = createMemo(() =>
     Array.from({ length: currentLayerCount() }, (_, i) => i),
-  );
-
-  const dotPositions = createMemo(() =>
-    generateDotPositions(
-      containerSize().width,
-      containerSize().height,
-      CONFIG.dotPixelSpacing,
-    ),
   );
 
   const getIconLayer = (depthRatio: number) =>
@@ -222,32 +193,38 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
         style={{ "transform-style": "preserve-3d" }}>
         <For each={layers()}>
           {(layerIndex) => {
-            const layerProgress = () =>
-              canAnimate()
-                ? (layerProgresses()[layerIndex] ?? 0)
-                : getFixedLayerProgress(layerIndex, currentLayerCount());
-            const color = () => waveSystem.getLayerColor(layerProgress());
-            const zIndex = () => currentLayerCount() - layerIndex;
+            const progress = () => layerProgresses()[layerIndex] ?? 0;
+            const settings = () =>
+              getLinearLayerSettings(
+                progress() * currentLayerCount(),
+                currentLayerCount(),
+                CONFIG,
+              );
+            const color = () => waveSystem.getLayerColor(progress());
+            const zIndex = () =>
+              currentLayerCount() -
+              Math.floor(progress() * currentLayerCount());
             const iconEchoes = createMemo(() =>
-              getIconEchoesForLayer(layerProgress()),
+              getIconEchoesForLayer(progress()),
             );
             return (
               <>
                 <SpaceLayer
-                  layerProgress={layerProgress()}
+                  scale={settings().scale}
+                  opacity={settings().opacity}
                   color={color()}
                   displayMode={currentDisplayMode()}
-                  config={LAYER_CONFIG}
-                  dotPositions={dotPositions()}
-                  containerWidth={containerSize().width}
-                  containerHeight={containerSize().height}
+                  dotSize={CONFIG.dotSize}
+                  lineWidth={CONFIG.lineWidth}
+                  cornerRadius={CONFIG.lineCornerRadius}
                 />
                 <IconEchoLayer
-                  layerProgress={layerProgress()}
+                  scale={settings().scale}
+                  opacity={settings().opacity}
                   color={color()}
                   icons={iconEchoes()}
                   zIndex={zIndex()}
-                  config={ICON_LAYER_CONFIG}
+                  iconSize={CONFIG.icons.size}
                 />
               </>
             );
@@ -257,25 +234,25 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
 
       <For each={CONFIG.iconPositions}>
         {(iconConfig, iconIndex) => {
-          const iconLayer = () => getIconLayer(iconConfig.depthRatio);
-          const slotProgress = () =>
-            getFixedLayerProgress(iconLayer(), currentLayerCount());
-          const layer = () => getLayerSettings(slotProgress(), CONFIG);
-          const color = () => waveSystem.getLayerColor(slotProgress());
-          const zIndex = () => currentLayerCount() - iconLayer();
+          const iconSlot = () => getIconLayer(iconConfig.depthRatio);
+          const settings = () =>
+            getLinearLayerSettings(iconSlot(), currentLayerCount(), CONFIG);
+          const iconProgress = () => iconSlot() / currentLayerCount();
+          const color = () => waveSystem.getLayerColor(iconProgress());
+          const zIndex = () => currentLayerCount() - iconSlot();
           return (
             <div
               class="pointer-events-none absolute inset-4 will-change-transform"
               style={{
-                transform: `translateZ(${zIndex()}px) scale3d(${layer().scale}, ${layer().scale}, 1)`,
+                transform: `translateZ(${zIndex()}px) scale3d(${settings().scale}, ${settings().scale}, 1)`,
                 "transform-origin": "center",
-                opacity: layer().opacity,
+                opacity: settings().opacity,
               }}>
               <div class="relative h-full w-full">
                 <LayerIcon
                   icon={iconConfig.icon}
                   color={color()}
-                  size={layer().iconSize}
+                  size={CONFIG.icons.size}
                   position={{ top: iconConfig.top, left: iconConfig.left }}
                   glideOffset={iconAnimations.getGlideOffset(iconIndex())}
                   rotation={iconAnimations.getIconRotation(iconIndex())}

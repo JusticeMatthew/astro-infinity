@@ -52,9 +52,9 @@ export const INFINITY_SPACE_CONFIG = configSchema.parse({
   perspectiveDistance: 1000,
   transitionDuration: 100,
   flowSpeed: 10000,
-  dotSize: 4,
+  dotSize: 6,
   dotPixelSpacing: 100,
-  lineWidth: 2,
+  lineWidth: 4,
   lineCornerRadius: 12,
   cardLayer: 8,
   icons: {
