@@ -1,0 +1,53 @@
+import type { Component } from "solid-js";
+import type { DotPosition } from "~/lib/layerHelpers";
+import { Show } from "solid-js";
+
+import { getLayerSettings } from "~/lib/layerHelpers";
+
+import { LayerDots } from "./LayerDots";
+import { LayerLines } from "./LayerLines";
+
+interface SpaceLayerProps {
+  layerProgress: number;
+  color: string;
+  displayMode: "dots" | "lines";
+  config: {
+    bufferScale: number;
+    minScale: number;
+    transitionDuration: number;
+    dotSize: number;
+    lineWidth: number;
+    lineCornerRadius: number;
+  };
+  dotPositions: DotPosition[];
+}
+
+export const SpaceLayer: Component<SpaceLayerProps> = (props) => {
+  const layer = () => getLayerSettings(props.layerProgress, props.config);
+
+  return (
+    <div
+      class="absolute inset-4"
+      style={{
+        transform: `scale(${layer().scale})`,
+        opacity: layer().opacity,
+        transition: `transform ${props.config.transitionDuration}ms ease-out`,
+      }}>
+      <Show
+        when={props.displayMode === "dots"}
+        fallback={
+          <LayerLines
+            color={props.color}
+            lineWidth={props.config.lineWidth}
+            cornerRadius={props.config.lineCornerRadius}
+          />
+        }>
+        <LayerDots
+          color={props.color}
+          dotSize={props.config.dotSize}
+          positions={props.dotPositions}
+        />
+      </Show>
+    </div>
+  );
+};

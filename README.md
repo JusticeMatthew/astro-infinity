@@ -1,43 +1,57 @@
-# Astro Starter Kit: Minimal
+# Infinity Space
 
-```sh
-pnpm create astro@latest -- --template minimal
+An infinite zoom effect built with Astro and Solid.js.
+
+## Tech Stack
+
+- [Astro](https://astro.build) - Static site framework with islands architecture
+- [Solid.js](https://www.solidjs.com) - Reactive UI library for the interactive components
+- [Tailwind CSS](https://tailwindcss.com) - Utility-first styling
+- [Nanostores](https://github.com/nanostores/nanostores) - Lightweight state management
+
+## Getting Started
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Project Structure
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```
+src/
+├── components/
+│   ├── InfinitySpace/          # Core visualization components
+│   │   ├── index.tsx           # Main orchestrator
+│   │   ├── SpaceLayer.tsx      # Individual layer rendering
+│   │   ├── LayerDots.tsx       # Dot grid display mode
+│   │   ├── LayerLines.tsx      # Line border display mode
+│   │   ├── LayerIcon.tsx       # Floating icon component
+│   │   ├── LayerCard.tsx       # Central info card
+│   │   └── IconEchoLayer.tsx   # Icon After-images
+│   ├── interface/              # Header controls
+│   │   └── control-modules/
+│   ├── primitives/             # Reusable UI components
+│   └── layout/                 # Page layout components
+├── lib/
+│   ├── composables/            # Solid.js composables
+│   │   ├── createAnimationLoop.ts
+│   │   ├── createWaveSystem.ts
+│   │   ├── createIconAnimations.ts
+│   │   └── useHueColors.ts
+│   ├── colorUtils.ts           # HSL color utilities
+│   ├── layerHelpers.ts         # Layer math and positioning
+│   ├── favicon.ts              # Dynamic favicon updates
+│   └── store.ts                # Global state (nanostores)
+├── constants/
+│   └── config.ts               # Configuration with Zod validation
+└── pages/
+    └── index.astro             
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## License
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+MIT
