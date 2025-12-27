@@ -27,7 +27,7 @@ export const RangeSlider: Component<RangeSliderProps> = (props) => {
     <div
       class="flex h-full grow items-center gap-1.5"
       style={{ color: colors.dark(80) }}>
-      <span class="w-12 text-right font-medium">
+      <span class="min-w-max text-right font-medium">
         {props.formatValue ? props.formatValue(props.value) : props.value}
       </span>
       <Icon

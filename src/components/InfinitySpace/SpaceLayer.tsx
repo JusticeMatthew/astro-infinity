@@ -45,8 +45,8 @@ export const SpaceLayer: Component<SpaceLayerProps> = (props) => {
         }>
         <LayerDots
           color={props.color}
+          dotPositions={props.dotPositions}
           dotSize={props.config.dotSize}
-          positions={props.dotPositions}
           containerWidth={props.containerWidth}
           containerHeight={props.containerHeight}
         />

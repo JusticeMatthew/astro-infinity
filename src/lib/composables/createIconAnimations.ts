@@ -35,7 +35,6 @@ const ICON_FREQUENCIES = [
 ];
 
 const SPIN_ROTATIONS = 3;
-const MAX_PLAYS_BEFORE_RESET = 2;
 
 export const createIconAnimations = (options: CreateIconAnimationsOptions) => {
   const [glideTime, setGlideTime] = createSignal(0);
@@ -50,8 +49,7 @@ export const createIconAnimations = (options: CreateIconAnimationsOptions) => {
       options.spinConfig.intervalMax,
     );
   let lastClockwise = false;
-  const playedTwice = new Set<number>();
-  const playCount = new Map<number, number>();
+  let lastSpinIcon: number | null = null;
 
   const iconPhases: IconPhase[] = Array.from(
     { length: options.iconCount },
@@ -73,31 +71,12 @@ export const createIconAnimations = (options: CreateIconAnimationsOptions) => {
   const cachedRotations = Array.from({ length: options.iconCount }, () => 0);
 
   const selectNextSpinIcon = (): number => {
-    const available = Array.from(
-      { length: options.iconCount },
-      (_, i) => i,
-    ).filter((i) => !playedTwice.has(i));
-
-    if (available.length === 0) {
-      playedTwice.clear();
-      playCount.clear();
-      return Math.floor(Math.random() * options.iconCount);
-    }
-
-    const randomIndex = Math.floor(Math.random() * available.length);
-    const selectedIcon = available[randomIndex];
-
-    if (selectedIcon === undefined) {
-      return 0;
-    }
-
-    const count = (playCount.get(selectedIcon) ?? 0) + 1;
-    playCount.set(selectedIcon, count);
-    if (count >= MAX_PLAYS_BEFORE_RESET) {
-      playedTwice.add(selectedIcon);
-    }
-
-    return selectedIcon;
+    let selected: number;
+    do {
+      selected = Math.floor(Math.random() * options.iconCount);
+    } while (selected === lastSpinIcon && options.iconCount > 1);
+    lastSpinIcon = selected;
+    return selected;
   };
 
   const getGlideOffset = (iconIndex: number) => {

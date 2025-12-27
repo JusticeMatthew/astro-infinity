@@ -1,7 +1,9 @@
 import type { Component } from "solid-js";
 import type { IconPosition } from "~/constants/config";
+import spaceGroteskWoff2 from "@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url";
 import { useStore } from "@nanostores/solid";
 import clsx from "clsx";
+import { toPng } from "html-to-image";
 import { For, createEffect, createMemo, createSignal, on } from "solid-js";
 
 import { createAnimationLoop } from "~/lib/composables/createAnimationLoop";
@@ -58,8 +60,9 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
 
   let containerRef!: HTMLDivElement;
 
+  const initialLayerCount = layerCountStore.get();
   const [layerProgresses, setLayerProgresses] = createSignal<number[]>(
-    Array.from({ length: CONFIG.layerCount }, (_, i) => i / CONFIG.layerCount),
+    Array.from({ length: initialLayerCount }, (_, i) => i / initialLayerCount),
   );
 
   const currentDisplayMode = useStore(displayModeStore);
@@ -136,12 +139,31 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
   const handleDownload = async () => {
     if (!containerRef) return;
 
-    const { toPng } = await import("html-to-image");
+    const fontResponse = await fetch(spaceGroteskWoff2);
+    const fontBlob = await fontResponse.blob();
+    const fontBase64 = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(fontBlob);
+    });
+
+    const fontEmbedCSS = `
+      @font-face {
+        font-family: 'Space Grotesk Variable';
+        font-style: normal;
+        font-weight: 300 700;
+        src: url(${fontBase64}) format('woff2-variations');
+      }
+    `;
+
+    console.log(
+      getComputedStyle(document.body).getPropertyValue("--astro-font"),
+    );
 
     const dataUrl = await toPng(containerRef, {
       pixelRatio: 2,
       backgroundColor: "#000000",
-      skipFonts: true,
+      fontEmbedCSS,
       filter: (node) => {
         if (!(node instanceof HTMLElement)) return true;
         if (node.dataset.excludeFromExport !== undefined) return false;

@@ -1,7 +1,8 @@
 @import "tailwindcss";
+@import "@fontsource-variable/space-grotesk";
 
 @theme {
-  --font-astro: var(--astro-font);
+  --font-astro: "Space Grotesk Variable", sans-serif;
 
   --animate-spin-once: spin 0.5s ease-out;
 }

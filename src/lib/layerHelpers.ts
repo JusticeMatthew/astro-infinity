@@ -106,60 +106,32 @@ export const getSpinRotation = (
   return eased * maxAngle * direction;
 };
 
-const addEdgePositions = (
-  positions: DotPosition[],
-  count: number,
-  containerSize: number,
-  createPosition: (normalizedPos: number) => DotPosition,
-): void => {
-  if (count <= 0) return;
-  const spacing = containerSize / (count + 1);
-  for (let i = 1; i <= count; i++) {
-    positions.push(createPosition(((spacing * i) / containerSize) * 100));
-  }
-};
-
 export const generateDotPositions = (
-  containerWidth: number,
-  containerHeight: number,
-  pixelSpacing: number,
+  width: number,
+  height: number,
+  spacing: number,
 ): DotPosition[] => {
-  if (containerWidth <= 0 || containerHeight <= 0 || pixelSpacing <= 0) {
-    return [];
+  if (width <= 0 || height <= 0 || spacing <= 0) return [];
+
+  const positions: DotPosition[] = [
+    { x: 0, y: 0 },
+    { x: 100, y: 0 },
+    { x: 100, y: 100 },
+    { x: 0, y: 100 },
+  ];
+
+  const hCount = Math.max(0, Math.round(width / spacing) - 1);
+  const vCount = Math.max(0, Math.round(height / spacing) - 1);
+
+  for (let i = 1; i <= hCount; i++) {
+    const x = (i / (hCount + 1)) * 100;
+    positions.push({ x, y: 0 }, { x, y: 100 });
   }
 
-  const positions: DotPosition[] = [];
-
-  positions.push({ x: 0, y: 0 });
-  positions.push({ x: 100, y: 0 });
-  positions.push({ x: 100, y: 100 });
-  positions.push({ x: 0, y: 100 });
-
-  const horizontalDotCount = Math.max(
-    0,
-    Math.round(containerWidth / pixelSpacing) - 1,
-  );
-  const verticalDotCount = Math.max(
-    0,
-    Math.round(containerHeight / pixelSpacing) - 1,
-  );
-
-  addEdgePositions(positions, horizontalDotCount, containerWidth, (x) => ({
-    x,
-    y: 0,
-  }));
-  addEdgePositions(positions, horizontalDotCount, containerWidth, (x) => ({
-    x,
-    y: 100,
-  }));
-  addEdgePositions(positions, verticalDotCount, containerHeight, (y) => ({
-    x: 100,
-    y,
-  }));
-  addEdgePositions(positions, verticalDotCount, containerHeight, (y) => ({
-    x: 0,
-    y,
-  }));
+  for (let i = 1; i <= vCount; i++) {
+    const y = (i / (vCount + 1)) * 100;
+    positions.push({ x: 0, y }, { x: 100, y });
+  }
 
   return positions;
 };

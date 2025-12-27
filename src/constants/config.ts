@@ -27,7 +27,6 @@ const iconPositionSchema = z.object({
 });
 
 const configSchema = z.object({
-  layerCount: z.number().int().positive(),
   baseLayerCount: z.number().int().positive(),
   minScale: z.number().positive(),
   bufferScale: z.number().positive(),
@@ -47,7 +46,6 @@ export type InfinitySpaceConfig = z.infer<typeof configSchema>;
 export type IconPosition = z.infer<typeof iconPositionSchema>;
 
 export const INFINITY_SPACE_CONFIG = configSchema.parse({
-  layerCount: 15,
   baseLayerCount: 15,
   minScale: 0.3,
   bufferScale: 1.15,
