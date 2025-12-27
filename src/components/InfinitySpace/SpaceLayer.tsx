@@ -20,6 +20,8 @@ interface SpaceLayerProps {
     lineCornerRadius: number;
   };
   dotPositions: DotPosition[];
+  containerWidth: number;
+  containerHeight: number;
 }
 
 export const SpaceLayer: Component<SpaceLayerProps> = (props) => {
@@ -27,9 +29,9 @@ export const SpaceLayer: Component<SpaceLayerProps> = (props) => {
 
   return (
     <div
-      class="absolute inset-4"
+      class="absolute inset-4 will-change-transform"
       style={{
-        transform: `scale(${layer().scale})`,
+        transform: `scale3d(${layer().scale}, ${layer().scale}, 1)`,
         opacity: layer().opacity,
         transition: `transform ${props.config.transitionDuration}ms ease-out`,
       }}>
@@ -46,6 +48,8 @@ export const SpaceLayer: Component<SpaceLayerProps> = (props) => {
           color={props.color}
           dotSize={props.config.dotSize}
           positions={props.dotPositions}
+          containerWidth={props.containerWidth}
+          containerHeight={props.containerHeight}
         />
       </Show>
     </div>

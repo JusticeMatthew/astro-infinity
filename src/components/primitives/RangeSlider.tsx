@@ -41,7 +41,7 @@ export const RangeSlider: Component<RangeSliderProps> = (props) => {
         min={props.min}
         max={props.max}
         step={props.step ?? 1}
-        value={props.value}
+        prop:value={props.value}
         onInput={handleInput}
         class="h-full cursor-pointer appearance-none rounded p-0.5"
         style={{ "background-color": colors.dark(10), color: colors.accent() }}

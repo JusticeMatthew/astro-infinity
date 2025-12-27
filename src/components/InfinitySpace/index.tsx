@@ -2,7 +2,6 @@ import type { Component } from "solid-js";
 import type { IconPosition } from "~/constants/config";
 import { useStore } from "@nanostores/solid";
 import clsx from "clsx";
-import { toPng } from "html-to-image";
 import { For, createEffect, createMemo, createSignal, on } from "solid-js";
 
 import { createAnimationLoop } from "~/lib/composables/createAnimationLoop";
@@ -130,6 +129,8 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
   const handleDownload = async () => {
     if (!containerRef) return;
 
+    const { toPng } = await import("html-to-image");
+
     const dataUrl = await toPng(containerRef, {
       pixelRatio: 2,
       backgroundColor: "#000000",
@@ -189,7 +190,9 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
       ref={containerRef}
       class={clsx("absolute inset-0 overflow-hidden", props.class)}
       style={{ perspective: `${CONFIG.perspectiveDistance}px` }}>
-      <div class="absolute inset-0 flex items-center justify-center">
+      <div
+        class="absolute inset-0 flex items-center justify-center will-change-auto"
+        style={{ "transform-style": "preserve-3d" }}>
         <For each={layers()}>
           {(layerIndex) => {
             const layerProgress = () =>
@@ -204,6 +207,8 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
                 displayMode={currentDisplayMode()}
                 config={LAYER_CONFIG}
                 dotPositions={dotPositions()}
+                containerWidth={containerSize().width}
+                containerHeight={containerSize().height}
               />
             );
           }}
@@ -218,11 +223,14 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
             const color = () => waveSystem.getLayerColor(layerProgress());
             const zIndex = () =>
               Math.round((1 - layerProgress()) * CONFIG.layerCount);
+            const iconEchoes = createMemo(() =>
+              getIconEchoesForLayer(layerProgress()),
+            );
             return (
               <IconEchoLayer
                 layerProgress={layerProgress()}
                 color={color()}
-                icons={getIconEchoesForLayer(layerProgress())}
+                icons={iconEchoes()}
                 zIndex={zIndex()}
                 config={ICON_LAYER_CONFIG}
               />
@@ -242,12 +250,11 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
           const zIndex = CONFIG.layerCount - iconConfig.layer;
           return (
             <div
-              class="pointer-events-none absolute inset-4"
+              class="pointer-events-none absolute inset-4 will-change-transform"
               style={{
-                transform: `scale(${layer.scale})`,
+                transform: `translateZ(${zIndex}px) scale3d(${layer.scale}, ${layer.scale}, 1)`,
                 "transform-origin": "center",
                 opacity: layer.opacity,
-                "z-index": zIndex,
                 transition: `transform ${CONFIG.transitionDuration}ms ease-out`,
               }}>
               <div class="relative h-full w-full">

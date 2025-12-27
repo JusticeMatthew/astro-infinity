@@ -16,7 +16,7 @@ export const LayerCard: Component = () => {
               ASTRO_INFINITY
             </h2>
             <p
-              class="max-w-[50ch] text-center text-xl opacity-80"
+              class="max-w-[40ch] text-center text-xl opacity-80"
               style={{ color: colors.subtle() }}>
               This "Infinity Space" is a hobby project to showcase the infinite
               possibilities of web development, powered by Astro & Solid-js

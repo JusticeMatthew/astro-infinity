@@ -32,11 +32,10 @@ export const IconEchoLayer: Component<IconEchoLayerProps> = (props) => {
 
   return (
     <div
-      class="pointer-events-none absolute inset-4"
+      class="pointer-events-none absolute inset-4 will-change-transform"
       style={{
-        transform: `scale(${layer().scale})`,
+        transform: `translateZ(${props.zIndex}px) scale3d(${layer().scale}, ${layer().scale}, 1)`,
         opacity: layer().opacity,
-        "z-index": props.zIndex,
         transition: `transform ${props.config.transitionDuration}ms ease-out`,
       }}>
       <For each={props.icons}>

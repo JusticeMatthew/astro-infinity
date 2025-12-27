@@ -3,44 +3,31 @@ import { For } from "solid-js";
 
 import { type DotPosition } from "~/lib/layerHelpers";
 
-interface LedDotProps {
-  color: string;
-  size: number;
-}
-
-const LedDot: Component<LedDotProps> = (props) => (
-  <div
-    class="rounded-full"
-    style={{
-      width: `${props.size}px`,
-      height: `${props.size}px`,
-      background: props.color,
-    }}
-  />
-);
-
 interface LayerDotsProps {
   color: string;
   dotSize: number;
   positions: DotPosition[];
+  containerWidth: number;
+  containerHeight: number;
 }
 
 export const LayerDots: Component<LayerDotsProps> = (props) => {
+  const radius = () => props.dotSize / 2;
+
   return (
-    <div class="absolute inset-0">
+    <svg
+      viewBox={`0 0 ${props.containerWidth} ${props.containerHeight}`}
+      class="absolute inset-0 h-full w-full">
       <For each={props.positions}>
         {(pos) => (
-          <div
-            class="absolute"
-            style={{
-              left: `${pos.x}%`,
-              top: `${pos.y}%`,
-              transform: "translate(-50%, -50%)",
-            }}>
-            <LedDot color={props.color} size={props.dotSize} />
-          </div>
+          <circle
+            cx={(pos.x / 100) * props.containerWidth}
+            cy={(pos.y / 100) * props.containerHeight}
+            r={radius()}
+            fill={props.color}
+          />
         )}
       </For>
-    </div>
+    </svg>
   );
 };
