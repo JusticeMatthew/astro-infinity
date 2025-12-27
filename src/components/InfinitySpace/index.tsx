@@ -132,7 +132,8 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
 
     const dataUrl = await toPng(containerRef, {
       pixelRatio: 2,
-      backgroundColor: "#0C0E0E",
+      backgroundColor: "#000000",
+      skipFonts: true,
       filter: (node) => {
         if (!(node instanceof HTMLElement)) return true;
         if (node.dataset.excludeFromExport !== undefined) return false;
@@ -142,7 +143,7 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
     });
 
     const link = document.createElement("a");
-    link.download = "infinity-space.png";
+    link.download = `infinity-space-${new Date().toLocaleDateString()}.png`;
     link.href = dataUrl;
     link.click();
   };
