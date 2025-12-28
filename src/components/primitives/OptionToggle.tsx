@@ -20,7 +20,7 @@ export const OptionToggle: Component<OptionToggleProps> = (props) => {
   return (
     <div
       class="relative grid h-full w-fit grid-cols-2 place-self-center rounded text-center"
-      style={{ color: colors.dark(80), "background-color": colors.dark(3) }}>
+      style={{ color: colors.dark(80), "background-color": colors.dark(5) }}>
       <div
         class="absolute top-0 h-full w-1/2 rounded transition-transform duration-200 ease-in-out"
         style={{
@@ -30,9 +30,9 @@ export const OptionToggle: Component<OptionToggleProps> = (props) => {
       />
       <button
         type="button"
-        class="relative z-10 flex cursor-pointer items-center gap-1 rounded px-4 font-medium transition-colors"
+        class="relative z-10 flex cursor-pointer items-center gap-1 rounded px-4 font-medium transition-all"
         classList={{
-          "opacity-40": isSecondSelected(),
+          "opacity-40 hover:opacity-70": isSecondSelected(),
         }}
         onClick={() => props.onChange(props.options.left.label)}>
         <Icon
@@ -44,9 +44,9 @@ export const OptionToggle: Component<OptionToggleProps> = (props) => {
       </button>
       <button
         type="button"
-        class="relative z-10 flex cursor-pointer items-center gap-1 rounded px-4 font-medium transition-colors"
+        class="group relative z-10 flex cursor-pointer items-center gap-1 rounded px-4 font-medium transition-all"
         classList={{
-          "opacity-40": !isSecondSelected(),
+          "opacity-40 hover:opacity-70": !isSecondSelected(),
         }}
         onClick={() => props.onChange(props.options.right.label)}>
         <Icon

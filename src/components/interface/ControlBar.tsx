@@ -15,7 +15,7 @@ export const ControlBar: Component = () => {
   const isHueReady = useStore(hueReady);
   const mode = useStore(displayMode);
 
-  const bgColor = () => (mode() === "dots" ? "bg-black/10" : "bg-black/70");
+  const bgColor = () => (mode() === "dots" ? "bg-black/30" : "bg-black/50");
 
   return (
     <div
