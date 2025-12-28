@@ -30,9 +30,9 @@ import {
 import { INFINITY_SPACE_CONFIG as CONFIG } from "~/constants/config";
 
 import { IconEchoLayer } from "./IconEchoLayer";
-import { LayerCard } from "./LayerCard";
 import { LayerIcon } from "./LayerIcon";
 import { SpaceLayer } from "./SpaceLayer";
+import { TextContent } from "./TextContent";
 
 interface InfinitySpaceProps {
   class?: string;
@@ -273,7 +273,7 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
         }}
       </For>
 
-      <LayerCard />
+      <TextContent />
     </div>
   );
 };

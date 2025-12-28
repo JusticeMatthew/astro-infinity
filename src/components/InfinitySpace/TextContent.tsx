@@ -4,7 +4,7 @@ import { useStore } from "@nanostores/solid";
 import { useHueColors } from "~/lib/composables/useHueColors";
 import { hueReady } from "~/lib/store";
 
-export const LayerCard: Component = () => {
+export const TextContent: Component = () => {
   const colors = useHueColors();
   const isHueReady = useStore(hueReady);
 
@@ -22,7 +22,7 @@ export const LayerCard: Component = () => {
             <p
               class="max-w-[40ch] text-center opacity-80 md:text-xl"
               style={{ color: colors.subtle() }}>
-              This "Infinity Space" is a hobby project to showcase the infinite
+              This "Infinity Space" is a demo project to showcase the infinite
               possibilities of web development, powered by Astro & Solid-js
             </p>
           </div>

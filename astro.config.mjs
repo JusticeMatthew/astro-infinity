@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, fontProviders } from "astro/config";
+import { defineConfig } from "astro/config";
 import cloudflare from "@astrojs/cloudflare";
 import solidJs from "@astrojs/solid-js";
 import tailwindcss from "@tailwindcss/vite";
@@ -13,17 +13,5 @@ export default defineConfig({
   integrations: [solidJs()],
   vite: {
     plugins: [tailwindcss(), solidSvg()],
-  },
-  experimental: {
-    fonts: [
-      {
-        provider: fontProviders.google(),
-        name: "Space Grotesk",
-        cssVariable: "--astro-font",
-        weights: [400, 700],
-        styles: ["normal"],
-        subsets: ["latin"],
-      },
-    ],
   },
 });

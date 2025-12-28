@@ -16,8 +16,8 @@ let hueInitialized = false;
 
 export const initializeRandomHue = () => {
   if (hueInitialized) return;
-  hueInitialized = true;
   accentHue.set(Math.floor(Math.random() * 360));
+  hueInitialized = true;
 
   requestAnimationFrame(() => {
     hueReady.set(true);

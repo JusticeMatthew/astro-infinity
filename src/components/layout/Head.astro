@@ -1,6 +1,4 @@
 ---
-import { Font } from "astro:assets";
-
 import ogImage from "~/assets/og-image.webp";
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -40,5 +38,4 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <meta property="twitter:url" content={canonicalURL} />
   {/* Misc */}
   <meta name="robots" content="max-image-preview:large" />
-  <Font cssVariable="--astro-font" />
 </head>

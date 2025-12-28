@@ -2,8 +2,9 @@ import "solid-js";
 
 declare module "solid-js" {
   namespace JSX {
-    interface InputHTMLAttributes<T> {
+    interface HTMLAttributes<T> {
       "prop:value"?: string | number;
+      "prop:innerText"?: string | number;
     }
   }
 }

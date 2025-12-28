@@ -38,7 +38,7 @@ export const RandomColor: Component = () => {
           {() => (
             <Icon
               name="refresh"
-              class="animate-spin-once h-5 w-5"
+              class="animate-spin-once size-5"
               style={{ color: colors.accent() }}
             />
           )}
@@ -52,16 +52,15 @@ export const RandomColor: Component = () => {
               const h = swatchHue();
               return h !== null
                 ? toHSLString(getAccentHSL(h))
-                : colors.accent();
+                : colors.dark(10);
             };
             return (
               <button
                 type="button"
-                class="h-full w-5 rounded border border-white/20 transition-opacity active:not-first:scale-95"
+                class="h-7.5 w-4 rounded transition-opacity active:not-first:scale-95"
                 classList={{
                   "cursor-pointer hover:opacity-65":
                     swatchHue() !== null && !isCurrent,
-                  "opacity-20": swatchHue() === null,
                 }}
                 style={{ "background-color": swatchColor() }}
                 disabled={swatchHue() === null || isCurrent}

@@ -1,12 +1,11 @@
 ---
 import Page from "~/layout/Page.astro";
-import { Header } from "~/interface/Header";
-
+import { ControlBar } from "~/interface/ControlBar";
 import { InfinitySpace } from "~/components/InfinitySpace";
 ---
 
 <Page>
-  <Header client:load />
+  <ControlBar client:load />
   <div class="relative h-full w-full overflow-hidden rounded-lg bg-black">
     <InfinitySpace client:load />
   </div>

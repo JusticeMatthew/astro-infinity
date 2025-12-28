@@ -1,9 +1,13 @@
 import type { Component } from "solid-js";
+import type { IconName } from "~/primitives/Icon";
 
 import { useHueColors } from "~/lib/composables/useHueColors";
 
+import { Icon } from "~/primitives/Icon";
+
 interface OptionToggleProps {
-  options: [string, string];
+  label?: string;
+  options: Record<"left" | "right", { label: string; icon: IconName }>;
   value: string;
   onChange: (value: string) => void;
 }
@@ -11,11 +15,11 @@ interface OptionToggleProps {
 export const OptionToggle: Component<OptionToggleProps> = (props) => {
   const colors = useHueColors();
 
-  const isSecondSelected = () => props.value === props.options[1];
+  const isSecondSelected = () => props.value === props.options.right.label;
 
   return (
     <div
-      class="relative grid h-full grid-cols-2 rounded text-center"
+      class="relative grid h-full w-fit grid-cols-2 place-self-center rounded text-center"
       style={{ color: colors.dark(80), "background-color": colors.dark(3) }}>
       <div
         class="absolute top-0 h-full w-1/2 rounded transition-transform duration-200 ease-in-out"
@@ -26,21 +30,31 @@ export const OptionToggle: Component<OptionToggleProps> = (props) => {
       />
       <button
         type="button"
-        class="relative z-10 cursor-pointer rounded px-4 font-medium transition-colors"
+        class="relative z-10 flex cursor-pointer items-center gap-1 rounded px-4 font-medium transition-colors"
         classList={{
           "opacity-40": isSecondSelected(),
         }}
-        onClick={() => props.onChange(props.options[0])}>
-        {props.options[0]}
+        onClick={() => props.onChange(props.options.left.label)}>
+        <Icon
+          name={props.options.left.icon}
+          style={{ color: colors.accent() }}
+          class="size-5"
+        />
+        {props.options.left.label}
       </button>
       <button
         type="button"
-        class="relative z-10 cursor-pointer rounded px-4 font-medium transition-colors"
+        class="relative z-10 flex cursor-pointer items-center gap-1 rounded px-4 font-medium transition-colors"
         classList={{
           "opacity-40": !isSecondSelected(),
         }}
-        onClick={() => props.onChange(props.options[1])}>
-        {props.options[1]}
+        onClick={() => props.onChange(props.options.right.label)}>
+        <Icon
+          name={props.options.right.icon}
+          style={{ color: colors.accent() }}
+          class="size-5"
+        />
+        {props.options.right.label}
       </button>
     </div>
   );

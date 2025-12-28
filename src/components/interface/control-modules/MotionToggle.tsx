@@ -10,7 +10,16 @@ export const MotionToggle: Component = () => {
 
   return (
     <OptionToggle
-      options={["Animated", "Paused"]}
+      options={{
+        left: {
+          label: "Animated",
+          icon: "play",
+        },
+        right: {
+          label: "Paused",
+          icon: "pause",
+        },
+      }}
       value={enabled() ? "Animated" : "Paused"}
       onChange={(v) => setMotionEnabled(v === "Animated")}
     />

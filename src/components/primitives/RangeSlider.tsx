@@ -25,11 +25,14 @@ export const RangeSlider: Component<RangeSliderProps> = (props) => {
 
   return (
     <div
-      class="flex h-full grow items-center gap-1.5"
+      class="flex h-full items-center gap-1.5"
       style={{ color: colors.dark(80) }}>
-      <span class="min-w-max text-right font-medium">
-        {props.formatValue ? props.formatValue(props.value) : props.value}
-      </span>
+      <span
+        prop:innerText={
+          props.formatValue ? props.formatValue(props.value) : props.value
+        }
+        class={`text-right font-medium tabular-nums ${props.icon === "layer-group" ? "min-w-[2ch]" : "min-w-[3.5ch]"}`}
+      />
       <Icon
         name={props.icon}
         class="size-5 shrink-0"

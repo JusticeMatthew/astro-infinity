@@ -15,7 +15,17 @@ export const DisplayMode: Component = () => {
 
   return (
     <OptionToggle
-      options={["Dots", "Lines"]}
+      label="mode"
+      options={{
+        left: {
+          label: "Dots",
+          icon: "dots",
+        },
+        right: {
+          label: "Lines",
+          icon: "lines",
+        },
+      }}
       value={mode() === "dots" ? "Dots" : "Lines"}
       onChange={(v) => handleChange(v.toLowerCase())}
     />
