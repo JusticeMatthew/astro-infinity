@@ -22,12 +22,6 @@ label {
   line-height: 1.1;
 }
 
-#control-bar {
-  margin: 0 auto;
-  max-width: clamp(16rem, 100%, 90rem);
-  padding-inline: 1rem;
-}
-
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;

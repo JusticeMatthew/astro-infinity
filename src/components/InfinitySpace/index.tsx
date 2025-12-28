@@ -13,12 +13,12 @@ import { updateFavicon } from "~/lib/favicon";
 import {
   generateDotPositions,
   getEchoOpacity,
-  getFixedLayerProgress,
   getLinearLayerSettings,
   isLayerDeeper,
 } from "~/lib/layerHelpers";
 import {
   accentHue,
+  breatheFlowMultiplier,
   displayMode as displayModeStore,
   downloadTrigger,
   hueReady,
@@ -84,7 +84,8 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
         currentLayerCount() / CONFIG.baseLayerCount,
       );
       const adjustedFlowSpeed = CONFIG.flowSpeed * layerRatio;
-      const increment = deltaTime / adjustedFlowSpeed;
+      const flowMultiplier = breatheFlowMultiplier.get();
+      const increment = (deltaTime / adjustedFlowSpeed) * flowMultiplier;
       setLayerProgresses((prev) => prev.map((p) => (p + increment) % 1));
       waveSystem.advanceWaves(deltaTime, layerRatio);
       iconAnimations.updateAnimations(deltaTime, currentTime);
@@ -170,15 +171,11 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
     ),
   );
 
-  const getIconLayer = (depthRatio: number) =>
-    Math.round(depthRatio * currentLayerCount());
-
   const getIconEchoesForLayer = (layerProgress: number) => {
     const layerCount = currentLayerCount();
     return CONFIG.iconPositions
       .map((iconConfig: IconPosition, iconIndex: number) => {
-        const iconLayer = getIconLayer(iconConfig.depthRatio);
-        const slotProgress = getFixedLayerProgress(iconLayer, layerCount);
+        const slotProgress = iconConfig.depthRatio;
         if (!isLayerDeeper(layerProgress, slotProgress)) return null;
 
         return {
@@ -244,12 +241,12 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
 
       <For each={CONFIG.iconPositions}>
         {(iconConfig, iconIndex) => {
-          const iconSlot = () => getIconLayer(iconConfig.depthRatio);
+          const iconPosition = () =>
+            iconConfig.depthRatio * currentLayerCount();
           const settings = () =>
-            getLinearLayerSettings(iconSlot(), currentLayerCount(), CONFIG);
-          const iconProgress = () => iconSlot() / currentLayerCount();
-          const color = () => waveSystem.getLayerColor(iconProgress());
-          const zIndex = () => currentLayerCount() - iconSlot();
+            getLinearLayerSettings(iconPosition(), currentLayerCount(), CONFIG);
+          const color = () => waveSystem.getLayerColor(iconConfig.depthRatio);
+          const zIndex = () => currentLayerCount() - Math.round(iconPosition());
           return (
             <div
               class="pointer-events-none absolute inset-4 will-change-transform"

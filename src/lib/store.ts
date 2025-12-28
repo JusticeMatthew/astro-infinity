@@ -78,3 +78,57 @@ export const initializeMotionPreference = () => {
 export const setMotionEnabled = (enabled: boolean) => {
   motionEnabled.set(enabled);
 };
+
+export const infinityBreathing = atom<boolean>(false);
+export const breatheProgress = atom<number>(0);
+export const breatheFlowMultiplier = atom<number>(1);
+
+const BREATHE_DURATION = 3000;
+const LAYER_MAX = 30;
+const BREATHE_FLOW_BOOST = 2.5;
+
+const easeInOutCubic = (t: number): number =>
+  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+export const triggerInfinityBreathe = () => {
+  if (infinityBreathing.get()) return;
+
+  infinityBreathing.set(true);
+
+  const startHue = accentHue.get();
+  const startLayers = layerCount.get();
+  const startTime = performance.now();
+
+  const animate = (currentTime: number) => {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / BREATHE_DURATION, 1);
+
+    breatheProgress.set(progress);
+
+    const layerBreatheCurve =
+      progress < 0.5
+        ? easeInOutCubic(progress * 2)
+        : easeInOutCubic(2 - progress * 2);
+
+    const newLayers = Math.round(
+      startLayers + (LAYER_MAX - startLayers) * layerBreatheCurve,
+    );
+    layerCount.set(newLayers);
+
+    breatheFlowMultiplier.set(1 + layerBreatheCurve * (BREATHE_FLOW_BOOST - 1));
+
+    const hueShift = progress * 360;
+    accentHue.set((startHue + hueShift) % 360);
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      layerCount.set(startLayers);
+      breatheProgress.set(0);
+      breatheFlowMultiplier.set(1);
+      infinityBreathing.set(false);
+    }
+  };
+
+  requestAnimationFrame(animate);
+};

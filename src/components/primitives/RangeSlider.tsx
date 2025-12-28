@@ -29,7 +29,9 @@ export const RangeSlider: Component<RangeSliderProps> = (props) => {
       style={{ color: colors.dark(80) }}>
       <span
         prop:innerText={
-          props.formatValue ? props.formatValue(props.value) : props.value
+          props.formatValue
+            ? props.formatValue(Math.floor(props.value))
+            : props.value
         }
         class={`text-right font-medium tabular-nums ${props.icon === "layer-group" ? "min-w-[2ch]" : "min-w-[3.5ch]"}`}
       />

@@ -11,7 +11,7 @@ export const DownloadButton: Component = () => {
   return (
     <button
       type="button"
-      class="flex h-full w-fit cursor-pointer items-center gap-1 place-self-center rounded px-4 font-medium transition-opacity hover:opacity-75"
+      class="flex h-full w-fit cursor-pointer items-center gap-1 place-self-end rounded px-4 font-medium transition-opacity hover:opacity-75"
       style={{ "background-color": colors.dark() }}
       onClick={triggerDownload}>
       <Icon
