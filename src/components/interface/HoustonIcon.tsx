@@ -1,6 +1,7 @@
 import type { Component, JSX } from "solid-js";
 import { actions } from "astro:actions";
 import { Show, createResource } from "solid-js";
+import { isServer } from "solid-js/web";
 
 import RocketIcon from "~/assets/icons/rocket.svg?component-solid";
 
@@ -16,7 +17,13 @@ const fetchHoustonSvg = async () => {
 };
 
 export const HoustonIcon: Component<HoustonIconProps> = (props) => {
-  const [svgContent] = createResource(fetchHoustonSvg);
+  const [svgContent] = createResource(
+    () => !isServer,
+    (shouldFetch) => {
+      if (!shouldFetch) return null;
+      return fetchHoustonSvg();
+    },
+  );
 
   return (
     <Show
