@@ -23,5 +23,5 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# private assets (served from R2)
-src/assets/icons/houston.svg
+# Claude
+CLAUDE.md
