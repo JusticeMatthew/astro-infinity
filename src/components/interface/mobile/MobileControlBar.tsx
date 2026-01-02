@@ -11,11 +11,10 @@ import {
 } from "~/lib/store";
 
 import { Icon } from "~/primitives/Icon";
-import { IconButton } from "~/primitives/IconButton";
-
-import { MotionButton } from "./control-modules/MotionButton";
-import { HuePanel } from "./mobile/HuePanel";
-import { ViewPanel } from "./mobile/ViewPanel";
+import { IconButton } from "~/interface/IconButton";
+import { MotionButton } from "~/interface/control-modules/MotionButton";
+import { HuePanel } from "~/interface/mobile/HuePanel";
+import { ViewPanel } from "~/interface/mobile/ViewPanel";
 
 type ExpandedPanel = "hue" | "view" | null;
 

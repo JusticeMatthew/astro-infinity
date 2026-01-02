@@ -1,9 +1,9 @@
-import type { IconName } from "./Icon";
+import type { IconName } from "../primitives/Icon";
 import type { Component } from "solid-js";
 
 import { useHueColors } from "~/lib/composables/useHueColors";
 
-import { Icon } from "./Icon";
+import { Icon } from "../primitives/Icon";
 
 interface IconButtonProps {
   icon: IconName;

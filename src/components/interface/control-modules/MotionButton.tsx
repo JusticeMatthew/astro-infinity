@@ -3,7 +3,7 @@ import { useStore } from "@nanostores/solid";
 
 import { motionEnabled, setMotionEnabled } from "~/lib/store";
 
-import { IconButton } from "~/primitives/IconButton";
+import { IconButton } from "~/interface/IconButton";
 
 export const MotionButton: Component = () => {
   const isMotionEnabled = useStore(motionEnabled);

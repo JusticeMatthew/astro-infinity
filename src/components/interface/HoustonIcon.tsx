@@ -10,24 +10,26 @@ interface HoustonIconProps {
   style?: JSX.CSSProperties | undefined;
 }
 
-let cachedSvg: string | null | undefined = null;
-let fetchPromise: Promise<string | null | undefined> | null = null;
+let cachedUrl: string | null = null;
+let fetchPromise: Promise<string | null> | null = null;
 
-const [houstonSvg, setHoustonSvg] = createSignal<string | null | undefined>(
-  null,
-);
+const [houstonUrl, setHoustonUrl] = createSignal<string | null>(null);
 
-const fetchHoustonSvg = () => {
-  if (cachedSvg) {
-    setHoustonSvg(cachedSvg);
+const fetchHoustonWebp = () => {
+  if (cachedUrl) {
+    setHoustonUrl(cachedUrl);
     return;
   }
 
   if (!fetchPromise) {
-    fetchPromise = actions.getHoustonSvg().then(({ data }) => {
-      cachedSvg = data;
-      setHoustonSvg(data);
-      return data;
+    fetchPromise = actions.getHouston().then(({ data }) => {
+      if (data) {
+        const uint8Array = new Uint8Array(data);
+        const blob = new Blob([uint8Array], { type: "image/webp" });
+        cachedUrl = URL.createObjectURL(blob);
+        setHoustonUrl(cachedUrl);
+      }
+      return cachedUrl;
     });
   }
 };
@@ -35,14 +37,28 @@ const fetchHoustonSvg = () => {
 export const HoustonIcon: Component<HoustonIconProps> = (props) => {
   onMount(() => {
     if (isServer || import.meta.env.DEV) return;
-    fetchHoustonSvg();
+    fetchHoustonWebp();
   });
 
   return (
     <Show
-      when={houstonSvg()}
+      when={houstonUrl()}
       fallback={<RocketIcon class={props.class} style={props.style} />}>
-      <div class={props.class} style={props.style} innerHTML={houstonSvg()!} />
+      <div
+        class={props.class}
+        style={{
+          ...props.style,
+          "background-color": "currentColor",
+          "-webkit-mask-image": `url(${houstonUrl()})`,
+          "mask-image": `url(${houstonUrl()})`,
+          "-webkit-mask-size": "contain",
+          "mask-size": "contain",
+          "-webkit-mask-repeat": "no-repeat",
+          "mask-repeat": "no-repeat",
+          "-webkit-mask-position": "center",
+          "mask-position": "center",
+        }}
+      />
     </Show>
   );
 };
