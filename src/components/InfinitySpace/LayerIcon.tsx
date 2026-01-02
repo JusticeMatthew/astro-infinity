@@ -34,7 +34,7 @@ export const LayerIcon: Component<LayerIconProps> = (props) => {
         color: props.color,
         opacity: isHueReady() ? (props.opacity ?? 1) : 0,
       }}>
-      <Icon name={props.icon} class="h-full w-full" />
+      <Icon name={props.icon} class="h-full w-full" color={props.color} />
     </div>
   );
 };

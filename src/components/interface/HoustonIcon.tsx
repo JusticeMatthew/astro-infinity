@@ -4,11 +4,14 @@ import clsx from "clsx";
 import { Show, createSignal, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
 
+import { darkenHSL } from "~/lib/colorUtils";
+
 import RocketIcon from "~/assets/icons/rocket.svg?component-solid";
 
 interface HoustonIconProps {
   class?: string | undefined;
   style?: JSX.CSSProperties | undefined;
+  color: string | undefined;
 }
 
 interface HoustonUrls {
@@ -48,6 +51,8 @@ const fetchHoustonImages = () => {
 };
 
 export const HoustonIcon: Component<HoustonIconProps> = (props) => {
+  const faceColor = () => props.color && darkenHSL(props.color, 0.4);
+
   onMount(() => {
     if (isServer || import.meta.env.DEV) return;
     fetchHoustonImages();
@@ -73,9 +78,7 @@ export const HoustonIcon: Component<HoustonIconProps> = (props) => {
           style={{
             position: "absolute",
             inset: 0,
-            "background-color": "currentColor",
-            opacity: 0.8,
-            filter: "blur(8px)",
+            "background-color": faceColor() ?? "currentColor",
             "-webkit-mask-image": `url(${houstonUrls()!.face})`,
             "mask-image": `url(${houstonUrls()!.face})`,
             ...maskStyles,

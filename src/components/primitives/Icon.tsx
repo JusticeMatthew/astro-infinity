@@ -62,13 +62,20 @@ interface IconProps {
   name: IconName;
   class?: string;
   style?: JSX.CSSProperties;
+  color?: string;
 }
 
 export const Icon: Component<IconProps> = (props) => {
   return (
     <Show
       when={props.name !== "houston"}
-      fallback={<HoustonIcon class={props.class} style={props.style} />}>
+      fallback={
+        <HoustonIcon
+          class={props.class}
+          style={props.style}
+          color={props.color}
+        />
+      }>
       <Dynamic
         component={ICONS[props.name as StaticIconName]}
         class={props.class}

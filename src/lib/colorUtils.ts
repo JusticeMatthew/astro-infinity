@@ -42,3 +42,11 @@ export const getSubtleHSL = (hue: number): HSL => ({
   s: ACCENT_SATURATION * SUBTLE_SATURATION_FACTOR,
   l: Math.min(ACCENT_LIGHTNESS + SUBTLE_LIGHTNESS_BOOST, MAX_LIGHTNESS),
 });
+
+const HSL_REGEX = /^hsl\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)$/;
+
+export const darkenHSL = (hsl: string, factor: number): string => {
+  const match = HSL_REGEX.exec(hsl);
+  if (!match) return hsl;
+  return `hsl(${match[1]}, ${match[2]}%, ${parseFloat(match[3]!) * factor}%)`;
+};
