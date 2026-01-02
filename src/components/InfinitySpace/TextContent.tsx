@@ -13,6 +13,7 @@ export const TextContent: Component = () => {
       class={`absolute inset-4 z-50 transition-opacity duration-300 ${isHueReady() ? "opacity-100" : "opacity-0"}`}>
       <div class="absolute inset-0 z-20 flex items-center justify-center p-12">
         <div class="relative flex items-center justify-center rounded-lg px-24 py-20">
+          <div class="absolute inset-1/6 size-2/3 bg-black blur-lg" />
           <div class="relative z-10 flex flex-col items-center justify-center gap-8 subpixel-antialiased">
             <h2
               class="font-astro text-center text-3xl font-bold md:text-5xl"

@@ -24,6 +24,7 @@ const iconPositionSchema = z.object({
   depthRatio: z.number().min(0).max(1),
   top: z.string(),
   left: z.string(),
+  hideOnMobile: z.boolean(),
 });
 
 const configSchema = z.object({
@@ -54,7 +55,7 @@ export const INFINITY_SPACE_CONFIG = configSchema.parse({
   flowSpeed: 10000,
   dotSize: 6,
   dotPixelSpacing: 80,
-  lineWidth: 4,
+  lineWidth: 3,
   lineCornerRadius: 12,
   cardLayer: 8,
   icons: {
@@ -76,6 +77,7 @@ export const INFINITY_SPACE_CONFIG = configSchema.parse({
       depthRatio: 0.33,
       top: "14%",
       left: "16%",
+      hideOnMobile: false,
     },
     {
       key: "bottomRight",
@@ -83,6 +85,7 @@ export const INFINITY_SPACE_CONFIG = configSchema.parse({
       depthRatio: 0.4,
       top: "80%",
       left: "78%",
+      hideOnMobile: false,
     },
     {
       key: "topRight",
@@ -90,6 +93,7 @@ export const INFINITY_SPACE_CONFIG = configSchema.parse({
       depthRatio: 0.67,
       top: "10%",
       left: "82%",
+      hideOnMobile: true,
     },
     {
       key: "bottomLeft",
@@ -97,6 +101,7 @@ export const INFINITY_SPACE_CONFIG = configSchema.parse({
       depthRatio: 0.73,
       top: "90%",
       left: "12%",
+      hideOnMobile: true,
     },
   ],
 });

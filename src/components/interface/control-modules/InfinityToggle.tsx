@@ -2,24 +2,26 @@ import type { Component } from "solid-js";
 import { useStore } from "@nanostores/solid";
 
 import { useHueColors } from "~/lib/composables/useHueColors";
-import { infinityBreathing, triggerInfinityBreathe } from "~/lib/store";
+import { infinityMode, motionEnabled, toggleInfinityMode } from "~/lib/store";
 
 import { Icon } from "~/primitives/Icon";
 
-export const InfinityButton: Component = () => {
+export const InfinityToggle: Component = () => {
   const colors = useHueColors();
-  const isBreathing = useStore(infinityBreathing);
+  const isActive = useStore(infinityMode);
+  const isMotionEnabled = useStore(motionEnabled);
+
+  const shouldSpin = () => isActive() && isMotionEnabled();
 
   return (
     <button
       type="button"
       class="group flex aspect-square h-full cursor-default items-center justify-center rounded transition-opacity"
       style={{ "background-color": colors.dark() }}
-      disabled={isBreathing()}
-      onClick={triggerInfinityBreathe}>
+      onClick={toggleInfinityMode}>
       <Icon
         name="infinity"
-        class="group-hover:animate-spin-once size-5"
+        class={`size-5 ${shouldSpin() ? "animate-spin" : "group-hover:animate-spin-once"}`}
         style={{ color: colors.accent() }}
       />
     </button>

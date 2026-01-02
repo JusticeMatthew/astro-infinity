@@ -6,7 +6,7 @@ import { displayMode, hueReady } from "~/lib/store";
 import { DisplayMode } from "./control-modules/DisplayMode";
 import { DownloadButton } from "./control-modules/DownloadButton";
 import { HueSlider } from "./control-modules/HueSlider";
-import { InfinityButton } from "./control-modules/InfinityButton";
+import { InfinityToggle } from "./control-modules/InfinityToggle";
 import { LayerCountSlider } from "./control-modules/LayerCountSlider";
 import { MotionToggle } from "./control-modules/MotionToggle";
 import { RandomColor } from "./control-modules/RandomColor";
@@ -19,11 +19,11 @@ export const ControlBar: Component = () => {
 
   return (
     <div
-      class={`fixed -top-8 z-50 w-fit rounded-b-xl border-x border-b border-white/5 px-5 pt-12 pb-4 backdrop-blur-[6px] ${bgColor()} overflow-clip shadow`}>
+      class={`fixed -top-8 z-50 w-fit rounded-b-xl border-x border-b border-white/5 px-5 pt-12 pb-4 backdrop-blur-[6px] ${bgColor()} overflow-clip shadow max-lg:hidden`}>
       <div
         class={`flex w-fit flex-col items-center justify-center gap-4 transition-opacity duration-300 ${isHueReady() ? "opacity-100" : "opacity-0"}`}>
         <div class="z-10 grid h-8 w-full grid-flow-col-dense items-center gap-8">
-          <InfinityButton />
+          <InfinityToggle />
           <DisplayMode />
           <MotionToggle />
           <DownloadButton />

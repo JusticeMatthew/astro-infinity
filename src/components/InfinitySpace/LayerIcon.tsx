@@ -14,14 +14,17 @@ interface LayerIconProps {
   position: { top: string; left: string };
   glideOffset: { x: number; y: number };
   rotation: number;
+  hideOnMobile?: boolean | undefined;
 }
 
 export const LayerIcon: Component<LayerIconProps> = (props) => {
   const isHueReady = useStore(hueReady);
 
+  const mobileHiddenClass = props.hideOnMobile ? "max-lg:hidden" : "";
+
   return (
     <div
-      class="layer-icon absolute transition-opacity duration-300 max-lg:hidden max-md:hidden max-sm:hidden"
+      class={`layer-icon absolute transition-opacity duration-300 ${mobileHiddenClass}`}
       style={{
         top: props.position.top,
         left: props.position.left,

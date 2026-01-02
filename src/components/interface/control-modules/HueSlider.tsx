@@ -1,7 +1,12 @@
 import type { Component } from "solid-js";
 import { useStore } from "@nanostores/solid";
 
-import { accentHue, clearAllWaves, setHue } from "~/lib/store";
+import {
+  accentHue,
+  clearAllWaves,
+  setHue,
+  setHueSliderActive,
+} from "~/lib/store";
 
 import { RangeSlider } from "~/primitives/RangeSlider";
 
@@ -21,6 +26,8 @@ export const HueSlider: Component = () => {
       icon="droplet"
       formatValue={(v) => `${v}°`}
       onChange={handleChange}
+      onDragStart={() => setHueSliderActive(true)}
+      onDragEnd={() => setHueSliderActive(false)}
     />
   );
 };

@@ -10,6 +10,7 @@ interface IconData {
   opacity: number;
   glideOffset: { x: number; y: number };
   rotation: number;
+  hideOnMobile?: boolean;
 }
 
 interface IconEchoLayerProps {
@@ -39,6 +40,7 @@ export const IconEchoLayer: Component<IconEchoLayerProps> = (props) => {
             position={iconData.position}
             glideOffset={iconData.glideOffset}
             rotation={iconData.rotation}
+            hideOnMobile={iconData.hideOnMobile}
           />
         )}
       </For>

@@ -13,6 +13,8 @@ interface RangeSliderProps {
   icon: IconName;
   formatValue?: (value: number) => string;
   onChange: (value: number) => void;
+  onDragStart?: () => void;
+  onDragEnd?: () => void;
 }
 
 export const RangeSlider: Component<RangeSliderProps> = (props) => {
@@ -22,6 +24,9 @@ export const RangeSlider: Component<RangeSliderProps> = (props) => {
     const target = e.target as HTMLInputElement;
     props.onChange(parseInt(target.value, 10));
   };
+
+  const handleDragStart = () => props.onDragStart?.();
+  const handleDragEnd = () => props.onDragEnd?.();
 
   return (
     <div
@@ -47,6 +52,11 @@ export const RangeSlider: Component<RangeSliderProps> = (props) => {
         step={props.step ?? 1}
         prop:value={props.value}
         onInput={handleInput}
+        onMouseDown={handleDragStart}
+        onTouchStart={handleDragStart}
+        onMouseUp={handleDragEnd}
+        onTouchEnd={handleDragEnd}
+        onMouseLeave={handleDragEnd}
         class="h-full cursor-pointer appearance-none rounded p-0.5"
         style={{ "background-color": colors.dark(10), color: colors.accent() }}
       />

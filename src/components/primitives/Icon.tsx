@@ -1,14 +1,17 @@
 import type { Component, JSX } from "solid-js";
+import { Dynamic } from "solid-js/web";
 
 import AstroIcon from "~/assets/icons/astro.svg?component-solid";
 import AstronautIcon from "~/assets/icons/astronaut.svg?component-solid";
 import DotsIcon from "~/assets/icons/dots.svg?component-solid";
 import DropletIcon from "~/assets/icons/droplet.svg?component-solid";
+import EyeIcon from "~/assets/icons/eye.svg?component-solid";
 import FileImageIcon from "~/assets/icons/file-image.svg?component-solid";
 import HoustonIcon from "~/assets/icons/houston.svg?component-solid";
 import InfinityIcon from "~/assets/icons/infinity.svg?component-solid";
 import LayerGroupIcon from "~/assets/icons/layer-group.svg?component-solid";
 import LinesIcon from "~/assets/icons/lines.svg?component-solid";
+import PaletteIcon from "~/assets/icons/palette.svg?component-solid";
 import PauseIcon from "~/assets/icons/pause.svg?component-solid";
 import PlayIcon from "~/assets/icons/play.svg?component-solid";
 import RefreshIcon from "~/assets/icons/refresh.svg?component-solid";
@@ -27,7 +30,9 @@ export type IconName =
   | "play"
   | "layer-group"
   | "infinity"
-  | "droplet";
+  | "droplet"
+  | "eye"
+  | "palette";
 
 const ICONS: Record<
   IconName,
@@ -46,6 +51,8 @@ const ICONS: Record<
   pause: PauseIcon,
   play: PlayIcon,
   infinity: InfinityIcon,
+  eye: EyeIcon,
+  palette: PaletteIcon,
 };
 
 interface IconProps {
@@ -55,6 +62,11 @@ interface IconProps {
 }
 
 export const Icon: Component<IconProps> = (props) => {
-  const IconComponent = ICONS[props.name];
-  return <IconComponent class={props.class} style={props.style} />;
+  return (
+    <Dynamic
+      component={ICONS[props.name]}
+      class={props.class}
+      style={props.style}
+    />
+  );
 };

@@ -17,11 +17,13 @@ import {
   isLayerDeeper,
 } from "~/lib/layerHelpers";
 import {
+  INFINITY_ROTATION_DURATION,
   accentHue,
-  breatheFlowMultiplier,
   displayMode as displayModeStore,
   downloadTrigger,
   hueReady,
+  hueSliderActive,
+  infinityMode,
   initializeMotionPreference,
   initializeRandomHue,
   layerCount as layerCountStore,
@@ -84,11 +86,15 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
         currentLayerCount() / CONFIG.baseLayerCount,
       );
       const adjustedFlowSpeed = CONFIG.flowSpeed * layerRatio;
-      const flowMultiplier = breatheFlowMultiplier.get();
-      const increment = (deltaTime / adjustedFlowSpeed) * flowMultiplier;
+      const increment = deltaTime / adjustedFlowSpeed;
       setLayerProgresses((prev) => prev.map((p) => (p + increment) % 1));
       waveSystem.advanceWaves(deltaTime, layerRatio);
       iconAnimations.updateAnimations(deltaTime, currentTime);
+
+      if (infinityMode.get() && !hueSliderActive.get()) {
+        const hueIncrement = (deltaTime / INFINITY_ROTATION_DURATION) * 360;
+        accentHue.set((accentHue.get() + hueIncrement) % 360);
+      }
     },
   });
 
@@ -184,6 +190,7 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
           opacity: getEchoOpacity(layerProgress, slotProgress, layerCount),
           glideOffset: iconAnimations.getGlideOffset(iconIndex),
           rotation: iconAnimations.getIconRotation(iconIndex),
+          hideOnMobile: iconConfig.hideOnMobile,
         };
       })
       .filter((x): x is NonNullable<typeof x> => x !== null);
@@ -263,6 +270,7 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
                   position={{ top: iconConfig.top, left: iconConfig.left }}
                   glideOffset={iconAnimations.getGlideOffset(iconIndex())}
                   rotation={iconAnimations.getIconRotation(iconIndex())}
+                  hideOnMobile={iconConfig.hideOnMobile}
                 />
               </div>
             </div>
