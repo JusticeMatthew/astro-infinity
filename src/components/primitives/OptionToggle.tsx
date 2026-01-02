@@ -30,7 +30,7 @@ export const OptionToggle: Component<OptionToggleProps> = (props) => {
       />
       <button
         type="button"
-        class="relative z-10 flex cursor-pointer items-center gap-1 rounded px-4 font-medium transition-all"
+        class="relative z-10 flex w-full cursor-pointer items-center justify-center gap-1 rounded px-4 font-medium transition-all"
         classList={{
           "opacity-40 hover:opacity-70": isSecondSelected(),
         }}
@@ -44,7 +44,7 @@ export const OptionToggle: Component<OptionToggleProps> = (props) => {
       </button>
       <button
         type="button"
-        class="relative z-10 flex cursor-pointer items-center gap-1 rounded px-4 font-medium transition-all"
+        class="relative z-10 flex w-full cursor-pointer items-center justify-center gap-1 rounded px-4 font-medium transition-all"
         classList={{
           "opacity-40 hover:opacity-70": !isSecondSelected(),
         }}

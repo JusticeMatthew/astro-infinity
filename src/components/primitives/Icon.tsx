@@ -1,5 +1,8 @@
 import type { Component, JSX } from "solid-js";
+import { Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
+
+import { HoustonIcon } from "~/interface/HoustonIcon";
 
 import AstroIcon from "~/assets/icons/astro.svg?component-solid";
 import AstronautIcon from "~/assets/icons/astronaut.svg?component-solid";
@@ -7,7 +10,6 @@ import DotsIcon from "~/assets/icons/dots.svg?component-solid";
 import DropletIcon from "~/assets/icons/droplet.svg?component-solid";
 import EyeIcon from "~/assets/icons/eye.svg?component-solid";
 import FileImageIcon from "~/assets/icons/file-image.svg?component-solid";
-import HoustonIcon from "~/assets/icons/houston.svg?component-solid";
 import InfinityIcon from "~/assets/icons/infinity.svg?component-solid";
 import LayerGroupIcon from "~/assets/icons/layer-group.svg?component-solid";
 import LinesIcon from "~/assets/icons/lines.svg?component-solid";
@@ -34,11 +36,12 @@ export type IconName =
   | "eye"
   | "palette";
 
+type StaticIconName = Exclude<IconName, "houston">;
+
 const ICONS: Record<
-  IconName,
+  StaticIconName,
   Component<JSX.SvgSVGAttributes<SVGSVGElement>>
 > = {
-  houston: HoustonIcon,
   astronaut: AstronautIcon,
   "file-image": FileImageIcon,
   refresh: RefreshIcon,
@@ -63,10 +66,14 @@ interface IconProps {
 
 export const Icon: Component<IconProps> = (props) => {
   return (
-    <Dynamic
-      component={ICONS[props.name]}
-      class={props.class}
-      style={props.style}
-    />
+    <Show
+      when={props.name !== "houston"}
+      fallback={<HoustonIcon class={props.class} style={props.style} />}>
+      <Dynamic
+        component={ICONS[props.name as StaticIconName]}
+        class={props.class}
+        style={props.style}
+      />
+    </Show>
   );
 };
