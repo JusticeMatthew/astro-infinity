@@ -19,7 +19,7 @@ export const OptionToggle: Component<OptionToggleProps> = (props) => {
 
   return (
     <div
-      class="relative grid h-full w-fit grid-cols-2 place-self-center rounded text-center"
+      class="relative grid h-full w-full grid-cols-2 place-self-center rounded text-center lg:w-fit"
       style={{ color: colors.dark(80), "background-color": colors.dark(5) }}>
       <div
         class="absolute top-0 h-full w-1/2 rounded transition-transform duration-200 ease-in-out"

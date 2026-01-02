@@ -79,23 +79,53 @@ export const MobileControlBar: Component = () => {
         <button
           type="button"
           class="flex h-full flex-1 cursor-pointer items-center justify-center gap-2 rounded px-3 transition-opacity"
-          style={{ "background-color": colors.dark() }}
+          style={{
+            "background-color":
+              expandedPanel() === "hue" ? colors.accent() : colors.dark(),
+          }}
           onClick={() => togglePanel("hue")}>
           <Icon
             name="palette"
             class="size-5"
-            style={{ color: colors.accent() }}
+            style={{
+              color:
+                expandedPanel() === "hue" ? colors.dark() : colors.accent(),
+            }}
           />
-          <span style={{ color: colors.dark(80) }}>Hue</span>
+          <span
+            class="font-medium"
+            style={{
+              color:
+                expandedPanel() === "hue" ? colors.dark() : colors.dark(80),
+            }}>
+            Hue
+          </span>
         </button>
 
         <button
           type="button"
           class="flex h-full flex-1 cursor-pointer items-center justify-center gap-2 rounded px-3 transition-opacity"
-          style={{ "background-color": colors.dark() }}
+          style={{
+            "background-color":
+              expandedPanel() === "view" ? colors.accent() : colors.dark(),
+          }}
           onClick={() => togglePanel("view")}>
-          <Icon name="eye" class="size-5" style={{ color: colors.accent() }} />
-          <span style={{ color: colors.dark(80) }}>View</span>
+          <Icon
+            name="eye"
+            class="size-5"
+            style={{
+              color:
+                expandedPanel() === "view" ? colors.dark() : colors.accent(),
+            }}
+          />
+          <span
+            class="font-medium"
+            style={{
+              color:
+                expandedPanel() === "view" ? colors.dark() : colors.dark(80),
+            }}>
+            View
+          </span>
         </button>
 
         <div class="h-full flex-1">

@@ -27,6 +27,7 @@ import {
   initializeRandomHue,
   layerCount as layerCountStore,
   motionEnabled,
+  setLayerCount,
 } from "~/lib/store";
 import { INFINITY_SPACE_CONFIG as CONFIG } from "~/constants/config";
 
@@ -74,6 +75,14 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
 
   createEffect(() => {
     updateFavicon(currentHue());
+  });
+
+  let mobileLayerCountSet = false;
+  createEffect(() => {
+    if (isHueReady() && !mobileLayerCountSet && window.innerWidth < 1024) {
+      mobileLayerCountSet = true;
+      setLayerCount(10);
+    }
   });
 
   const { containerSize, setContainerRef } = createAnimationLoop({
