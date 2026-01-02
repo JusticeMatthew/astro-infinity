@@ -7,11 +7,22 @@ export const server = {
       if (import.meta.env.DEV) return null;
 
       const { env } = (context.locals as Runtime<Env>).runtime;
-      const object = await env.R2_BUCKET.get("houston.webp");
-      if (!object) return null;
+      const [frameObject, faceObject] = await Promise.all([
+        env.R2_BUCKET.get("houston-frame.webp"),
+        env.R2_BUCKET.get("houston-face.webp"),
+      ]);
 
-      const arrayBuffer = await object.arrayBuffer();
-      return Array.from(new Uint8Array(arrayBuffer));
+      if (!frameObject || !faceObject) return null;
+
+      const [frameBuffer, faceBuffer] = await Promise.all([
+        frameObject.arrayBuffer(),
+        faceObject.arrayBuffer(),
+      ]);
+
+      return {
+        frame: Array.from(new Uint8Array(frameBuffer)),
+        face: Array.from(new Uint8Array(faceBuffer)),
+      };
     },
   }),
 };

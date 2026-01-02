@@ -10,26 +10,38 @@ interface HoustonIconProps {
   style?: JSX.CSSProperties | undefined;
 }
 
-let cachedUrl: string | null = null;
-let fetchPromise: Promise<string | null> | null = null;
+interface HoustonUrls {
+  frame: string;
+  face: string;
+}
 
-const [houstonUrl, setHoustonUrl] = createSignal<string | null>(null);
+let cachedUrls: HoustonUrls | null = null;
+let fetchPromise: Promise<HoustonUrls | null> | null = null;
 
-const fetchHoustonWebp = () => {
-  if (cachedUrl) {
-    setHoustonUrl(cachedUrl);
+const [houstonUrls, setHoustonUrls] = createSignal<HoustonUrls | null>(null);
+
+const fetchHoustonImages = () => {
+  if (cachedUrls) {
+    setHoustonUrls(cachedUrls);
     return;
   }
 
   if (!fetchPromise) {
     fetchPromise = actions.getHouston().then(({ data }) => {
       if (data) {
-        const uint8Array = new Uint8Array(data);
-        const blob = new Blob([uint8Array], { type: "image/webp" });
-        cachedUrl = URL.createObjectURL(blob);
-        setHoustonUrl(cachedUrl);
+        const frameBlob = new Blob([new Uint8Array(data.frame)], {
+          type: "image/webp",
+        });
+        const faceBlob = new Blob([new Uint8Array(data.face)], {
+          type: "image/webp",
+        });
+        cachedUrls = {
+          frame: URL.createObjectURL(frameBlob),
+          face: URL.createObjectURL(faceBlob),
+        };
+        setHoustonUrls(cachedUrls);
       }
-      return cachedUrl;
+      return cachedUrls;
     });
   }
 };
@@ -37,28 +49,45 @@ const fetchHoustonWebp = () => {
 export const HoustonIcon: Component<HoustonIconProps> = (props) => {
   onMount(() => {
     if (isServer || import.meta.env.DEV) return;
-    fetchHoustonWebp();
+    fetchHoustonImages();
   });
+
+  const maskStyles = {
+    "-webkit-mask-size": "contain",
+    "mask-size": "contain",
+    "-webkit-mask-repeat": "no-repeat",
+    "mask-repeat": "no-repeat",
+    "-webkit-mask-position": "center",
+    "mask-position": "center",
+  } as JSX.CSSProperties;
 
   return (
     <Show
-      when={houstonUrl()}
+      when={houstonUrls()}
       fallback={<RocketIcon class={props.class} style={props.style} />}>
-      <div
-        class={props.class}
-        style={{
-          ...props.style,
-          "background-color": "currentColor",
-          "-webkit-mask-image": `url(${houstonUrl()})`,
-          "mask-image": `url(${houstonUrl()})`,
-          "-webkit-mask-size": "contain",
-          "mask-size": "contain",
-          "-webkit-mask-repeat": "no-repeat",
-          "mask-repeat": "no-repeat",
-          "-webkit-mask-position": "center",
-          "mask-position": "center",
-        }}
-      />
+      <div class={props.class} style={{ ...props.style, position: "relative" }}>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            "background-color": "currentColor",
+            opacity: 0.3,
+            "-webkit-mask-image": `url(${houstonUrls()!.face})`,
+            "mask-image": `url(${houstonUrls()!.face})`,
+            ...maskStyles,
+          }}
+        />
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            "background-color": "currentColor",
+            "-webkit-mask-image": `url(${houstonUrls()!.frame})`,
+            "mask-image": `url(${houstonUrls()!.frame})`,
+            ...maskStyles,
+          }}
+        />
+      </div>
     </Show>
   );
 };
