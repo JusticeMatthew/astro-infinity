@@ -1,5 +1,6 @@
 import type { Component, JSX } from "solid-js";
 import { actions } from "astro:actions";
+import clsx from "clsx";
 import { Show, createSignal, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
 
@@ -65,13 +66,16 @@ export const HoustonIcon: Component<HoustonIconProps> = (props) => {
     <Show
       when={houstonUrls()}
       fallback={<RocketIcon class={props.class} style={props.style} />}>
-      <div class={props.class} style={{ ...props.style, position: "relative" }}>
+      <div
+        class={clsx(["overflow-hidden", props.class])}
+        style={{ ...props.style, position: "relative" }}>
         <div
           style={{
             position: "absolute",
             inset: 0,
             "background-color": "currentColor",
-            opacity: 0.3,
+            opacity: 0.4,
+            filter: "blur(4px)",
             "-webkit-mask-image": `url(${houstonUrls()!.face})`,
             "mask-image": `url(${houstonUrls()!.face})`,
             ...maskStyles,
