@@ -6,7 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 import solidSvg from "vite-plugin-solid-svg";
 
 export default defineConfig({
-  site: "https://astro-infinity.matthewajustice.workers.dev",
+  site: "https://astro-infinity.space",
   adapter: cloudflare({
     imageService: "compile",
   }),
