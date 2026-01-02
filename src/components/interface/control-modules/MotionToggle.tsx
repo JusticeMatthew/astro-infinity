@@ -6,7 +6,7 @@ import { motionEnabled, setMotionEnabled } from "~/lib/store";
 import { OptionToggle } from "~/primitives/OptionToggle";
 
 export const MotionToggle: Component = () => {
-  const enabled = useStore(motionEnabled);
+  const isMotionEnabled = useStore(motionEnabled);
 
   return (
     <OptionToggle
@@ -20,7 +20,7 @@ export const MotionToggle: Component = () => {
           icon: "pause",
         },
       }}
-      value={enabled() ? "Animated" : "Paused"}
+      leftSelected={isMotionEnabled}
       onChange={(v) => setMotionEnabled(v === "Animated")}
     />
   );

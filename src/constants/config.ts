@@ -83,7 +83,7 @@ export const INFINITY_SPACE_CONFIG = configSchema.parse({
       key: "bottomRight",
       icon: "solid",
       depthRatio: 0.4,
-      top: "80%",
+      top: "85%",
       left: "78%",
       hideOnMobile: false,
     },

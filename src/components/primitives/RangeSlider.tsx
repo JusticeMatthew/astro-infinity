@@ -30,7 +30,7 @@ export const RangeSlider: Component<RangeSliderProps> = (props) => {
 
   return (
     <div
-      class="flex h-full items-center gap-1.5"
+      class="flex h-full w-full items-center gap-1.5 max-lg:mx-auto lg:max-w-76"
       style={{ color: colors.dark(80) }}>
       <span
         prop:innerText={
@@ -57,7 +57,7 @@ export const RangeSlider: Component<RangeSliderProps> = (props) => {
         onMouseUp={handleDragEnd}
         onTouchEnd={handleDragEnd}
         onMouseLeave={handleDragEnd}
-        class="h-full cursor-pointer appearance-none rounded p-0.5"
+        class="h-full cursor-pointer appearance-none rounded p-0.5 max-lg:grow"
         style={{ "background-color": colors.dark(10), color: colors.accent() }}
       />
     </div>

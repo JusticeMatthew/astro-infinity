@@ -22,7 +22,7 @@ export const IconButton: Component<IconButtonProps> = (props) => {
   return (
     <button
       type="button"
-      class={`flex aspect-square h-full cursor-pointer items-center justify-center rounded transition-opacity ${props.class ?? ""}`}
+      class={`flex h-full cursor-pointer items-center justify-center rounded transition-opacity max-lg:w-full lg:aspect-square ${props.class ?? ""}`}
       style={{ "background-color": colors.dark() }}
       onClick={props.onClick}>
       <Icon

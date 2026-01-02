@@ -26,7 +26,7 @@ export const DisplayMode: Component = () => {
           icon: "lines",
         },
       }}
-      value={mode() === "dots" ? "Dots" : "Lines"}
+      leftSelected={() => mode() === "dots"}
       onChange={(v) => handleChange(v.toLowerCase())}
     />
   );

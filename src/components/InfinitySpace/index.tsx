@@ -24,7 +24,6 @@ import {
   hueReady,
   hueSliderActive,
   infinityMode,
-  initializeMotionPreference,
   initializeRandomHue,
   layerCount as layerCountStore,
   motionEnabled,
@@ -42,7 +41,6 @@ interface InfinitySpaceProps {
 
 export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
   initializeRandomHue();
-  initializeMotionPreference();
 
   let containerRef!: HTMLDivElement;
 

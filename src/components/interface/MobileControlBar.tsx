@@ -49,59 +49,60 @@ export const MobileControlBar: Component = () => {
   return (
     <div
       ref={containerRef}
-      class={`fixed right-0 bottom-0 left-0 z-50 transition-opacity duration-300 lg:hidden ${isHueReady() ? "opacity-100" : "opacity-0"}`}
+      class={`fixed right-0 bottom-0 left-0 z-50 flex max-h-18 min-h-12 justify-center border-t border-white/5 bg-black transition-opacity duration-300 lg:hidden ${isHueReady() ? "opacity-100" : "opacity-0"}`}
       data-exclude-from-export>
-      <Show when={expandedPanel() === "hue"}>
-        <HuePanel />
-      </Show>
-      <Show when={expandedPanel() === "view"}>
-        <ViewPanel />
-      </Show>
+      <div class="absolute right-0 bottom-full left-0">
+        <Show when={expandedPanel() === "hue"}>
+          <HuePanel />
+        </Show>
+        <Show when={expandedPanel() === "view"}>
+          <ViewPanel />
+        </Show>
+      </div>
 
-      <div class="flex items-center justify-center gap-3 border-t border-white/5 bg-black p-3">
-        <div class="h-8">
+      <div class="flex w-full max-w-xl flex-row items-center justify-center gap-2 p-3">
+        <div class="aspect-square h-full flex-1">
           <IconButton
             icon="infinity"
             onClick={toggleInfinityMode}
             isActive={isInfinityActive()}
             spinWhenActive
-            class="!cursor-default"
+            class="aspect-auto! w-full cursor-default!"
           />
         </div>
 
-        <div class="h-6 w-px" style={{ "background-color": colors.dark(30) }} />
+        <div
+          class="mx-0.5 h-full w-px"
+          style={{ "background-color": colors.dark(30) }}
+        />
 
         <button
           type="button"
-          class="flex h-8 items-center gap-1.5 rounded px-2 transition-opacity"
+          class="flex h-full flex-1 cursor-pointer items-center justify-center gap-2 rounded px-3 transition-opacity"
           style={{ "background-color": colors.dark() }}
           onClick={() => togglePanel("hue")}>
           <Icon
             name="palette"
-            class="size-4"
+            class="size-5"
             style={{ color: colors.accent() }}
           />
-          <span class="text-sm" style={{ color: colors.dark(80) }}>
-            Hue
-          </span>
+          <span style={{ color: colors.dark(80) }}>Hue</span>
         </button>
 
         <button
           type="button"
-          class="flex h-8 items-center gap-1.5 rounded px-2 transition-opacity"
+          class="flex h-full flex-1 cursor-pointer items-center justify-center gap-2 rounded px-3 transition-opacity"
           style={{ "background-color": colors.dark() }}
           onClick={() => togglePanel("view")}>
-          <Icon name="eye" class="size-4" style={{ color: colors.accent() }} />
-          <span class="text-sm" style={{ color: colors.dark(80) }}>
-            View
-          </span>
+          <Icon name="eye" class="size-5" style={{ color: colors.accent() }} />
+          <span style={{ color: colors.dark(80) }}>View</span>
         </button>
 
-        <div class="h-8">
+        <div class="h-full flex-1">
           <MotionButton />
         </div>
 
-        <div class="h-8">
+        <div class="h-full flex-1">
           <IconButton icon="file-image" onClick={triggerDownload} />
         </div>
       </div>

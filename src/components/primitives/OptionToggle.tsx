@@ -1,4 +1,4 @@
-import type { Component } from "solid-js";
+import type { Accessor, Component } from "solid-js";
 import type { IconName } from "~/primitives/Icon";
 
 import { useHueColors } from "~/lib/composables/useHueColors";
@@ -8,14 +8,14 @@ import { Icon } from "~/primitives/Icon";
 interface OptionToggleProps {
   label?: string;
   options: Record<"left" | "right", { label: string; icon: IconName }>;
-  value: string;
+  leftSelected: Accessor<boolean>;
   onChange: (value: string) => void;
 }
 
 export const OptionToggle: Component<OptionToggleProps> = (props) => {
   const colors = useHueColors();
 
-  const isSecondSelected = () => props.value === props.options.right.label;
+  const isSecondSelected = () => !props.leftSelected();
 
   return (
     <div
@@ -44,7 +44,7 @@ export const OptionToggle: Component<OptionToggleProps> = (props) => {
       </button>
       <button
         type="button"
-        class="group relative z-10 flex cursor-pointer items-center gap-1 rounded px-4 font-medium transition-all"
+        class="relative z-10 flex cursor-pointer items-center gap-1 rounded px-4 font-medium transition-all"
         classList={{
           "opacity-40 hover:opacity-70": !isSecondSelected(),
         }}

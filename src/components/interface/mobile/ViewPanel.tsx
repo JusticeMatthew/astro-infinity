@@ -10,7 +10,7 @@ export const ViewPanel: Component = () => {
 
   return (
     <div
-      class="flex w-full flex-col gap-4 rounded-t-xl border-x border-t border-white/5 px-4 py-4 backdrop-blur-[6px]"
+      class="flex w-full flex-col gap-4 rounded-t-lg border-x border-t border-white/5 p-4"
       style={{ "background-color": colors.dark(5) }}>
       <div class="h-8">
         <DisplayMode />

@@ -22,18 +22,19 @@ export const RandomColor: Component = () => {
     return Array.from({ length: SWATCH_COUNT }, (_, i) => all[i] ?? null);
   };
 
-  const handleClick = () => {
+  const handleClick = (e: MouseEvent) => {
+    e.stopImmediatePropagation();
     setSpinKey((k) => k + 1);
     randomizeHue();
   };
 
   return (
-    <div class="flex h-full items-center gap-1.5 rounded">
+    <div class="flex h-full w-full items-center justify-evenly gap-3 rounded lg:w-fit lg:gap-1.5">
       <button
         type="button"
-        class="flex aspect-square h-full cursor-pointer items-center justify-center rounded transition-opacity hover:opacity-75"
+        class="flex h-full max-w-1/3 cursor-pointer items-center justify-center rounded transition-opacity hover:opacity-75 max-lg:flex-1 lg:aspect-square"
         style={{ "background-color": colors.dark() }}
-        onClick={handleClick}>
+        onClick={(e) => handleClick(e)}>
         <For each={[spinKey()]}>
           {() => (
             <Icon
@@ -44,7 +45,7 @@ export const RandomColor: Component = () => {
           )}
         </For>
       </button>
-      <div class="flex h-full items-center gap-1.5">
+      <div class="flex h-full items-center justify-evenly gap-3 max-lg:flex-1 lg:gap-1.5">
         <Index each={swatches()}>
           {(swatchHue, index) => {
             const isCurrent = index === 0;
@@ -57,7 +58,7 @@ export const RandomColor: Component = () => {
             return (
               <button
                 type="button"
-                class="h-7.5 w-4 rounded transition-opacity active:not-first:scale-95"
+                class="h-full flex-1 rounded transition-opacity active:not-first:scale-95 lg:w-4"
                 classList={{
                   "cursor-pointer hover:opacity-65":
                     swatchHue() !== null && !isCurrent,
