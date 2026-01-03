@@ -56,7 +56,7 @@ export const HoustonIcon: Component<HoustonIconProps> = (props) => {
 
   createEffect(() => {
     if (houstonUrls()) {
-      setTimeout(() => setShowRocket(false), 700);
+      setTimeout(() => setShowRocket(false), 300);
     }
   });
 
