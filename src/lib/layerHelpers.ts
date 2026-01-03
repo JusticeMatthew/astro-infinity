@@ -71,13 +71,6 @@ export const getLinearLayerSettings = (
   return { scale, opacity };
 };
 
-export const getFixedLayerProgress = (
-  slot: number,
-  layerCount: number,
-): number => {
-  return slot / layerCount;
-};
-
 export const getRandomSpinInterval = (
   intervalMin: number,
   intervalMax: number,

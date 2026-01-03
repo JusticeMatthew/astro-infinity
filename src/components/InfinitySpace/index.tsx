@@ -2,7 +2,6 @@ import type { Component } from "solid-js";
 import type { IconPosition } from "~/constants/config";
 import spaceGroteskWoff2 from "@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url";
 import { useStore } from "@nanostores/solid";
-import clsx from "clsx";
 import { toPng } from "html-to-image";
 import { For, createEffect, createMemo, createSignal, on } from "solid-js";
 
@@ -27,7 +26,9 @@ import {
   initializeRandomHue,
   layerCount as layerCountStore,
   motionEnabled,
+  prefersReducedMotion,
   setLayerCount,
+  setMotionEnabled,
 } from "~/lib/store";
 import { INFINITY_SPACE_CONFIG as CONFIG } from "~/constants/config";
 
@@ -42,6 +43,13 @@ interface InfinitySpaceProps {
 
 export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
   initializeRandomHue();
+
+  createEffect(() => {
+    if (prefersReducedMotion()) {
+      setMotionEnabled(false);
+      infinityMode.set(false);
+    }
+  });
 
   let containerRef!: HTMLDivElement;
 
@@ -206,7 +214,7 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
   return (
     <div
       ref={containerRef}
-      class={clsx("absolute inset-0 overflow-hidden", props.class)}
+      class={`absolute inset-0 overflow-hidden${props.class ? ` ${props.class}` : ""}`}
       style={{ perspective: `${CONFIG.perspectiveDistance}px` }}>
       <div
         class={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 will-change-auto ${isHueReady() ? "opacity-100" : "opacity-0"}`}

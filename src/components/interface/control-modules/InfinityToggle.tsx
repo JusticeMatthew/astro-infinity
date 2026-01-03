@@ -19,7 +19,7 @@ export const InfinityToggle: Component = () => {
   return (
     <button
       type="button"
-      class="group flex aspect-square h-full cursor-default items-center justify-center rounded transition-opacity disabled:pointer-events-none"
+      class="group flex h-full w-full cursor-default items-center justify-center rounded transition-opacity disabled:pointer-events-none lg:aspect-square"
       style={{ "background-color": colors.dark() }}
       disabled={!isMotionEnabled()}
       onClick={toggleInfinityMode}>

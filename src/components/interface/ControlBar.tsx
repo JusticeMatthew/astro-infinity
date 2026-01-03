@@ -28,7 +28,7 @@ export const ControlBar: Component = () => {
           <MotionToggle />
           <DownloadButton />
         </div>
-        <div class="z-10 grid h-8 w-full grid-flow-col-dense items-center gap-8">
+        <div class="z-10 grid h-8 w-full grid-cols-[auto_1fr_1fr] items-center gap-8">
           <RandomColor />
           <HueSlider />
           <LayerCountSlider />

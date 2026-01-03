@@ -23,33 +23,60 @@ pnpm dev
 
 ```
 src/
+├── actions/
+│   └── index.ts
+├── assets/
+│   └── icons/
 ├── components/
-│   ├── InfinitySpace/          # Core visualization components
-│   │   ├── index.tsx           # Main orchestrator
-│   │   ├── SpaceLayer.tsx      # Individual layer rendering
-│   │   ├── LayerDots.tsx       # Dot grid display mode
-│   │   ├── LayerLines.tsx      # Line border display mode
-│   │   ├── LayerIcon.tsx       # Floating icon component
-│   │   ├── LayerCard.tsx       # Central info card
-│   │   └── IconEchoLayer.tsx   # Icon After-images
-│   ├── interface/              # Header controls
-│   │   └── control-modules/
-│   ├── primitives/             # Reusable UI components
-│   └── layout/                 # Page layout components
+│   ├── InfinitySpace/          # Core visualization
+│   │   ├── index.tsx
+│   │   ├── SpaceLayer.tsx
+│   │   ├── LayerDots.tsx
+│   │   ├── LayerLines.tsx
+│   │   ├── LayerIcon.tsx
+│   │   ├── TextContent.tsx
+│   │   └── IconEchoLayer.tsx
+│   ├── interface/
+│   │   ├── ControlBar.tsx
+│   │   ├── HoustonIcon.tsx
+│   │   ├── IconButton.tsx
+│   │   ├── control-modules/
+│   │   │   ├── DisplayMode.tsx
+│   │   │   ├── DownloadButton.tsx
+│   │   │   ├── HueSlider.tsx
+│   │   │   ├── InfinityToggle.tsx
+│   │   │   ├── LayerCountSlider.tsx
+│   │   │   ├── MotionButton.tsx
+│   │   │   ├── MotionToggle.tsx
+│   │   │   └── RandomColor.tsx
+│   │   └── mobile/ 
+│   │       ├── HuePanel.tsx
+│   │       ├── MobileControlBar.tsx
+│   │       └── ViewPanel.tsx
+│   ├── primitives/
+│   │   ├── Icon.tsx
+│   │   ├── OptionToggle.tsx
+│   │   └── RangeSlider.tsx
+│   └── layout/
+│       ├── Head.astro
+│       └── Page.astro
+├── constants/
+│   └── config.ts               # Zod validated defaults
 ├── lib/
-│   ├── composables/            # Solid.js composables
+│   ├── composables/            # Core animation logic
 │   │   ├── createAnimationLoop.ts
 │   │   ├── createWaveSystem.ts
 │   │   ├── createIconAnimations.ts
 │   │   └── useHueColors.ts
-│   ├── colorUtils.ts           # HSL color utilities
-│   ├── layerHelpers.ts         # Layer math and positioning
-│   ├── favicon.ts              # Dynamic favicon updates
-│   └── store.ts                # Global state (nanostores)
-├── constants/
-│   └── config.ts               # Configuration with Zod validation
-└── pages/
-    └── index.astro             
+│   ├── colorUtils.ts
+│   ├── layerHelpers.ts
+│   ├── favicon.ts
+│   └── store.ts
+├── pages/
+│   └── index.astro
+├── styles/
+│   └── global.css
+└── types/
 ```
 
 ## License

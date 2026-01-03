@@ -9,7 +9,6 @@
       "~/styles/*": ["src/styles/*"],
       "~/lib/*": ["src/lib/*"],
       "~/assets/*": ["src/assets/*"],
-      "~/types/*": ["src/types/*"],
       "~/constants/*": ["src/constants/*"],
       "~/layout/*": ["src/components/layout/*"],
       "~/primitives/*": ["src/components/primitives/*"],

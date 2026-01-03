@@ -9,7 +9,7 @@ import {
   pendingWave,
 } from "~/lib/store";
 
-export interface HueWave {
+interface HueWave {
   hue: number;
   wavefrontPosition: number;
 }

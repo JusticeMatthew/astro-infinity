@@ -21,6 +21,7 @@ export const TextContent: Component = () => {
               ASTRO_INFINITY
             </h2>
             <p
+              data-exclude-from-export
               class="max-w-[40ch] text-center opacity-80 md:text-xl"
               style={{ color: colors.subtle() }}>
               This "Infinity Space" is a demo project to showcase the infinite

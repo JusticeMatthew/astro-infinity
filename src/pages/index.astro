@@ -5,12 +5,6 @@ import { MobileControlBar } from "~/interface/mobile/MobileControlBar";
 import { InfinitySpace } from "~/components/InfinitySpace";
 ---
 
-<script>
-  import { initializeMotionPreference } from "~/lib/store";
-
-  initializeMotionPreference();
-</script>
-
 <Page>
   <ControlBar client:load />
   <MobileControlBar client:load />

@@ -1,6 +1,6 @@
 import type { Component, JSX } from "solid-js";
 import { actions } from "astro:actions";
-import clsx from "clsx";
+import { makeTimer } from "@solid-primitives/timer";
 import { Show, createEffect, createSignal, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
 
@@ -23,6 +23,7 @@ let cachedUrls: HoustonUrls | null = null;
 let fetchPromise: Promise<HoustonUrls | null> | null = null;
 
 const [houstonUrls, setHoustonUrls] = createSignal<HoustonUrls | null>(null);
+const [showRocket, setShowRocket] = createSignal(true);
 
 const fetchHoustonImages = () => {
   if (cachedUrls) {
@@ -50,15 +51,14 @@ const fetchHoustonImages = () => {
   }
 };
 
-export const HoustonIcon: Component<HoustonIconProps> = (props) => {
-  const [showRocket, setShowRocket] = createSignal(true);
-  const faceColor = () => props.color && darkenHSL(props.color, 0.4);
+createEffect(() => {
+  if (houstonUrls()) {
+    makeTimer(() => setShowRocket(false), 500, setTimeout);
+  }
+});
 
-  createEffect(() => {
-    if (houstonUrls()) {
-      setTimeout(() => setShowRocket(false), 300);
-    }
-  });
+export const HoustonIcon: Component<HoustonIconProps> = (props) => {
+  const faceColor = () => props.color && darkenHSL(props.color, 0.4);
 
   onMount(() => {
     if (isServer || import.meta.env.DEV) return;
@@ -76,17 +76,22 @@ export const HoustonIcon: Component<HoustonIconProps> = (props) => {
 
   return (
     <div
-      class={clsx(["overflow-hidden", props.class])}
+      class={`overflow-hidden${props.class ? ` ${props.class}` : ""}`}
       style={{ ...props.style, position: "relative" }}>
       <Show when={showRocket()}>
         <Icon
           name="rocket"
-          class="absolute inset-0 h-full w-full transition-opacity duration-300"
+          class="absolute inset-0 h-full w-full transition-opacity duration-500 ease-out"
           classList={{ "opacity-0": !!houstonUrls() }}
         />
       </Show>
       <Show when={houstonUrls()}>
-        <div class="h-full w-full opacity-100 transition-opacity duration-300 starting:opacity-0">
+        <div
+          class="h-full w-full transition-opacity duration-500 ease-in"
+          classList={{
+            "opacity-0": showRocket(),
+            "opacity-100": !showRocket(),
+          }}>
           <div
             style={{
               position: "absolute",

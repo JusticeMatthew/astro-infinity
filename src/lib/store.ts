@@ -1,3 +1,4 @@
+import { createMediaQuery } from "@solid-primitives/media";
 import { atom } from "nanostores";
 
 const MAX_HUE_HISTORY = 5;
@@ -62,18 +63,10 @@ export const triggerDownload = () => {
 
 export const motionEnabled = atom<boolean>(true);
 
-let motionInitialized = false;
-
-export const initializeMotionPreference = () => {
-  if (motionInitialized || typeof window === "undefined") return;
-  motionInitialized = true;
-  const prefersReduced = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
-  if (prefersReduced) {
-    motionEnabled.set(false);
-  }
-};
+export const prefersReducedMotion = createMediaQuery(
+  "(prefers-reduced-motion: reduce)",
+  false,
+);
 
 export const setMotionEnabled = (enabled: boolean) => {
   motionEnabled.set(enabled);
@@ -86,6 +79,7 @@ export const hueSliderActive = atom<boolean>(false);
 
 export const toggleInfinityMode = () => {
   if (!motionEnabled.get()) return;
+  clearAllWaves();
   infinityMode.set(!infinityMode.get());
 };
 
