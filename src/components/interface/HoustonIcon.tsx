@@ -1,12 +1,12 @@
 import type { Component, JSX } from "solid-js";
 import { actions } from "astro:actions";
 import clsx from "clsx";
-import { Show, createSignal, onMount } from "solid-js";
+import { Show, createEffect, createSignal, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
 
 import { darkenHSL } from "~/lib/colorUtils";
 
-import RocketIcon from "~/assets/icons/rocket.svg?component-solid";
+import { Icon } from "~/primitives/Icon";
 
 interface HoustonIconProps {
   class?: string | undefined;
@@ -51,7 +51,14 @@ const fetchHoustonImages = () => {
 };
 
 export const HoustonIcon: Component<HoustonIconProps> = (props) => {
+  const [showRocket, setShowRocket] = createSignal(true);
   const faceColor = () => props.color && darkenHSL(props.color, 0.4);
+
+  createEffect(() => {
+    if (houstonUrls()) {
+      setTimeout(() => setShowRocket(false), 300);
+    }
+  });
 
   onMount(() => {
     if (isServer || import.meta.env.DEV) return;
@@ -68,33 +75,40 @@ export const HoustonIcon: Component<HoustonIconProps> = (props) => {
   } as JSX.CSSProperties;
 
   return (
-    <Show
-      when={houstonUrls()}
-      fallback={<RocketIcon class={props.class} style={props.style} />}>
-      <div
-        class={clsx(["overflow-hidden", props.class])}
-        style={{ ...props.style, position: "relative" }}>
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            "background-color": faceColor() ?? "currentColor",
-            "-webkit-mask-image": `url(${houstonUrls()!.face})`,
-            "mask-image": `url(${houstonUrls()!.face})`,
-            ...maskStyles,
-          }}
+    <div
+      class={clsx(["overflow-hidden", props.class])}
+      style={{ ...props.style, position: "relative" }}>
+      <Show when={showRocket()}>
+        <Icon
+          name="rocket"
+          class="absolute inset-0 h-full w-full transition-opacity duration-300"
+          classList={{ "opacity-0": !!houstonUrls() }}
         />
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            "background-color": "currentColor",
-            "-webkit-mask-image": `url(${houstonUrls()!.frame})`,
-            "mask-image": `url(${houstonUrls()!.frame})`,
-            ...maskStyles,
-          }}
-        />
-      </div>
-    </Show>
+      </Show>
+      <Show when={houstonUrls()}>
+        <div class="h-full w-full opacity-100 transition-opacity duration-300 starting:opacity-0">
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              "background-color": faceColor() ?? "currentColor",
+              "-webkit-mask-image": `url(${houstonUrls()!.face})`,
+              "mask-image": `url(${houstonUrls()!.face})`,
+              ...maskStyles,
+            }}
+          />
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              "background-color": "currentColor",
+              "-webkit-mask-image": `url(${houstonUrls()!.frame})`,
+              "mask-image": `url(${houstonUrls()!.frame})`,
+              ...maskStyles,
+            }}
+          />
+        </div>
+      </Show>
+    </div>
   );
 };

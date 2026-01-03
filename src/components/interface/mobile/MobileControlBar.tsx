@@ -16,6 +16,8 @@ import { MotionButton } from "~/interface/control-modules/MotionButton";
 import { HuePanel } from "~/interface/mobile/HuePanel";
 import { ViewPanel } from "~/interface/mobile/ViewPanel";
 
+import { InfinityToggle } from "../control-modules/InfinityToggle";
+
 type ExpandedPanel = "hue" | "view" | null;
 
 export const MobileControlBar: Component = () => {
@@ -61,13 +63,7 @@ export const MobileControlBar: Component = () => {
 
       <div class="flex w-full max-w-xl flex-row items-center justify-center gap-2 p-3">
         <div class="aspect-square h-full flex-1">
-          <IconButton
-            icon="infinity"
-            onClick={toggleInfinityMode}
-            isActive={isInfinityActive()}
-            spinWhenActive
-            class="aspect-auto! w-full cursor-default!"
-          />
+          <InfinityToggle />
         </div>
 
         <div

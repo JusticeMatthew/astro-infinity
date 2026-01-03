@@ -2,13 +2,19 @@ import type { Component } from "solid-js";
 import { useStore } from "@nanostores/solid";
 
 import { useHueColors } from "~/lib/composables/useHueColors";
-import { motionEnabled, toggleInfinityMode } from "~/lib/store";
+import { infinityMode, motionEnabled, toggleInfinityMode } from "~/lib/store";
 
 import { Icon } from "~/primitives/Icon";
 
 export const InfinityToggle: Component = () => {
   const colors = useHueColors();
+  const isActive = useStore(infinityMode);
   const isMotionEnabled = useStore(motionEnabled);
+
+  const shouldSpin = () => {
+    if (!isMotionEnabled()) return "";
+    return isActive() ? "animate-spin" : "group-hover:animate-spin-once";
+  };
 
   return (
     <button
@@ -19,7 +25,7 @@ export const InfinityToggle: Component = () => {
       onClick={toggleInfinityMode}>
       <Icon
         name="infinity"
-        class="motion-safe:group-hover:animate-spin-once size-5"
+        class={`aspect-auto! size-5 w-full cursor-default! ${shouldSpin()}`}
         style={{ color: colors.accent() }}
       />
     </button>

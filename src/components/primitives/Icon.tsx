@@ -17,6 +17,7 @@ import PaletteIcon from "~/assets/icons/palette.svg?component-solid";
 import PauseIcon from "~/assets/icons/pause.svg?component-solid";
 import PlayIcon from "~/assets/icons/play.svg?component-solid";
 import RefreshIcon from "~/assets/icons/refresh.svg?component-solid";
+import RocketIcon from "~/assets/icons/rocket.svg?component-solid";
 import SolidIcon from "~/assets/icons/solid.svg?component-solid";
 
 export type IconName =
@@ -24,6 +25,7 @@ export type IconName =
   | "astronaut"
   | "file-image"
   | "refresh"
+  | "rocket"
   | "astro"
   | "solid"
   | "dots"
@@ -45,6 +47,7 @@ const ICONS: Record<
   astronaut: AstronautIcon,
   "file-image": FileImageIcon,
   refresh: RefreshIcon,
+  rocket: RocketIcon,
   astro: AstroIcon,
   solid: SolidIcon,
   "layer-group": LayerGroupIcon,
