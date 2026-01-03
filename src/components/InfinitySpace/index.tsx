@@ -1,8 +1,9 @@
 import type { Component } from "solid-js";
 import type { IconPosition } from "~/constants/config";
+import { actions } from "astro:actions";
 import spaceGroteskWoff2 from "@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url";
 import { useStore } from "@nanostores/solid";
-import { toPng } from "html-to-image";
+import { toBlob } from "html-to-image";
 import { For, createEffect, createMemo, createSignal, on } from "solid-js";
 
 import { createAnimationLoop } from "~/lib/composables/createAnimationLoop";
@@ -23,7 +24,6 @@ import {
   hueReady,
   hueSliderActive,
   infinityMode,
-  initializeRandomHue,
   layerCount as layerCountStore,
   motionEnabled,
   prefersReducedMotion,
@@ -42,10 +42,10 @@ interface InfinitySpaceProps {
 }
 
 export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
-  initializeRandomHue();
+  const reduceMotion = useStore(prefersReducedMotion);
 
   createEffect(() => {
-    if (prefersReducedMotion()) {
+    if (reduceMotion()) {
       setMotionEnabled(false);
       infinityMode.set(false);
     }
@@ -145,39 +145,55 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
   const handleDownload = async () => {
     if (!containerRef) return;
 
-    const fontResponse = await fetch(spaceGroteskWoff2);
-    const fontBlob = await fontResponse.blob();
-    const fontBase64 = await new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.readAsDataURL(fontBlob);
-    });
+    try {
+      const fontResponse = await fetch(spaceGroteskWoff2);
+      const fontBlob = await fontResponse.blob();
+      const fontBase64 = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(fontBlob);
+      });
 
-    const fontEmbedCSS = `
-      @font-face {
-        font-family: 'Space Grotesk Variable';
-        font-style: normal;
-        font-weight: 300 700;
-        src: url(${fontBase64}) format('woff2-variations');
+      const fontEmbedCSS = `
+        @font-face {
+          font-family: 'Space Grotesk Variable';
+          font-style: normal;
+          font-weight: 300 700;
+          src: url(${fontBase64}) format('woff2-variations');
+        }
+      `;
+
+      const blob = await toBlob(containerRef, {
+        pixelRatio: 2,
+        backgroundColor: "#000000",
+        fontEmbedCSS,
+        filter: (node) => {
+          if (!(node instanceof HTMLElement)) return true;
+          if (node.dataset.excludeFromExport !== undefined) return false;
+          if (node.tagName === "HEADER") return false;
+          return true;
+        },
+      });
+
+      if (!blob) {
+        console.error("Failed to generate image");
+        return;
       }
-    `;
 
-    const dataUrl = await toPng(containerRef, {
-      pixelRatio: 2,
-      backgroundColor: "#000000",
-      fontEmbedCSS,
-      filter: (node) => {
-        if (!(node instanceof HTMLElement)) return true;
-        if (node.dataset.excludeFromExport !== undefined) return false;
-        if (node.tagName === "HEADER") return false;
-        return true;
-      },
-    });
+      const arrayBuffer = await blob.arrayBuffer();
+      const imageData = Array.from(new Uint8Array(arrayBuffer));
 
-    const link = document.createElement("a");
-    link.download = `infinity-space-${new Date().toLocaleDateString()}.png`;
-    link.href = dataUrl;
-    link.click();
+      const { data, error } = await actions.uploadExport({ imageData });
+      if (error || !data) {
+        console.error("Failed to upload:", error);
+        return;
+      }
+
+      const filename = data.key.split("/").pop();
+      window.location.href = `/api/export/${filename}`;
+    } catch (err) {
+      console.error("Download failed:", err);
+    }
   };
 
   const layers = createMemo(() =>

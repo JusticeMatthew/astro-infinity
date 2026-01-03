@@ -1,4 +1,3 @@
-import { createMediaQuery } from "@solid-primitives/media";
 import { atom } from "nanostores";
 
 const MAX_HUE_HISTORY = 5;
@@ -63,10 +62,7 @@ export const triggerDownload = () => {
 
 export const motionEnabled = atom<boolean>(true);
 
-export const prefersReducedMotion = createMediaQuery(
-  "(prefers-reduced-motion: reduce)",
-  false,
-);
+export const prefersReducedMotion = atom<boolean>(false);
 
 export const setMotionEnabled = (enabled: boolean) => {
   motionEnabled.set(enabled);
