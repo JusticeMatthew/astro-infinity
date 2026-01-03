@@ -1,6 +1,8 @@
 import type { Runtime } from "@astrojs/cloudflare";
 import type { APIRoute } from "astro";
 
+export const prerender = false;
+
 export const GET: APIRoute = async ({ params, locals }) => {
   const key = params.key;
   if (!key) {
