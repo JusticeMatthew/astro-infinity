@@ -26,7 +26,14 @@ const renderFaviconToCanvas = (hue: number): Promise<Blob> => {
   });
 };
 
+let lastUpdate = 0;
+const THROTTLE_MS = 500;
+
 export const updateFavicon = async (hue: number): Promise<void> => {
+  const now = Date.now();
+  if (now - lastUpdate < THROTTLE_MS) return;
+  lastUpdate = now;
+
   if (currentBlobUrl) {
     URL.revokeObjectURL(currentBlobUrl);
   }

@@ -23,13 +23,13 @@ export const MobileControlBar: Component = () => {
 
   let containerRef!: HTMLDivElement;
 
-  const handleClickOutside = (e: MouseEvent) => {
-    if (containerRef && !containerRef.contains(e.target as Node)) {
-      setExpandedPanel(null);
-    }
-  };
-
   onMount(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef && !containerRef.contains(e.target as Node)) {
+        setExpandedPanel(null);
+      }
+    };
+
     document.addEventListener("click", handleClickOutside);
 
     onCleanup(() => {
