@@ -63,6 +63,7 @@ interface IconProps {
   class?: string;
   style?: JSX.CSSProperties;
   color?: string;
+  classList?: Record<string, boolean>;
 }
 
 export const Icon: Component<IconProps> = (props) => {

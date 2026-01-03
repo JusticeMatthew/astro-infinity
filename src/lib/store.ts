@@ -85,6 +85,7 @@ export const infinityMode = atom<boolean>(false);
 export const hueSliderActive = atom<boolean>(false);
 
 export const toggleInfinityMode = () => {
+  if (!motionEnabled.get()) return;
   infinityMode.set(!infinityMode.get());
 };
 
