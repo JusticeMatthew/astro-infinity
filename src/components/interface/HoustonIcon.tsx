@@ -89,20 +89,19 @@ export const HoustonIcon: Component<HoustonIconProps> = (props) => {
 
   return (
     <div
-      class={`overflow-hidden${props.class ? ` ${props.class}` : ""}`}
+      class={`overflow-hidden${props.class}`}
       style={{ ...props.style, position: "relative" }}>
       <Icon
         name="rocket"
-        class="absolute inset-0 h-full w-full transition-opacity duration-500 ease-out"
-        classList={{ "opacity-0": !!houstonUrls() }}
+        class={`absolute inset-0 h-full w-full transition-opacity duration-500 ease-out ${
+          showRocket() ? "opacity-100" : "opacity-0"
+        }`}
       />
       <Show when={houstonUrls()}>
         <div
-          class="h-full w-full transition-opacity duration-500 ease-in"
-          classList={{
-            "opacity-0": showRocket(),
-            "opacity-100": !showRocket(),
-          }}>
+          class={`h-full w-full transition-opacity duration-500 ease-in ${
+            showRocket() ? "opacity-0" : "opacity-100"
+          }`}>
           <div
             style={{
               position: "absolute",
