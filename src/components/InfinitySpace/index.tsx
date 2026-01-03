@@ -1,7 +1,6 @@
 import type { Component } from "solid-js";
 import type { IconPosition } from "~/constants/config";
 import { actions } from "astro:actions";
-import spaceGroteskWoff2 from "@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url";
 import { useStore } from "@nanostores/solid";
 import { toPng } from "html-to-image";
 import { For, createEffect, createMemo, createSignal, on } from "solid-js";
@@ -10,6 +9,7 @@ import { createAnimationLoop } from "~/lib/composables/createAnimationLoop";
 import { createIconAnimations } from "~/lib/composables/createIconAnimations";
 import { createWaveSystem } from "~/lib/composables/createWaveSystem";
 import { updateFavicon } from "~/lib/favicon";
+import { getCachedFontCSS } from "~/lib/fontCache";
 import {
   generateDotPositions,
   getEchoOpacity,
@@ -148,30 +148,14 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
 
     downloadLoading.set(true);
 
-    // Defer heavy work to let spinner render
-    setTimeout(async () => {
+    requestAnimationFrame(async () => {
       try {
-        const fontResponse = await fetch(spaceGroteskWoff2);
-        const fontBlob = await fontResponse.blob();
-        const fontBase64 = await new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.readAsDataURL(fontBlob);
-        });
-
-        const fontEmbedCSS = `
-          @font-face {
-            font-family: 'Space Grotesk Variable';
-            font-style: normal;
-            font-weight: 300 700;
-            src: url(${fontBase64}) format('woff2-variations');
-          }
-        `;
+        const fontEmbedCSS = getCachedFontCSS();
 
         const dataUrl = await toPng(containerRef, {
           pixelRatio: 2,
           backgroundColor: "#000000",
-          fontEmbedCSS,
+          fontEmbedCSS: fontEmbedCSS ?? "",
           filter: (node) => {
             if (!(node instanceof HTMLElement)) return true;
             if (node.dataset.excludeFromExport !== undefined) return false;
@@ -180,7 +164,6 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
           },
         });
 
-        // Convert data URL to array for upload
         const response = await fetch(dataUrl);
         const blob = await response.blob();
         const arrayBuffer = await blob.arrayBuffer();
@@ -199,7 +182,7 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
       } finally {
         downloadLoading.set(false);
       }
-    }, 0);
+    });
   };
 
   const layers = createMemo(() =>
@@ -236,7 +219,8 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
   return (
     <div
       ref={containerRef}
-      class={`absolute inset-0 overflow-hidden${props.class ? ` ${props.class}` : ""}`}
+      class="absolute inset-0 overflow-hidden will-change-transform contain-strict [content-visibility:auto]"
+      classList={{ [props.class!]: !!props.class }}
       style={{ perspective: `${CONFIG.perspectiveDistance}px` }}>
       <div
         class={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 will-change-auto ${isHueReady() ? "opacity-100" : "opacity-0"}`}

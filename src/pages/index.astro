@@ -11,3 +11,11 @@ import { Main } from "~/layout/Main";
     <Main client:load />
   </body>
 </html>
+
+<script>
+  import spaceGroteskWoff2 from "@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url";
+
+  import { prefetchExportFont } from "~/lib/fontCache";
+
+  prefetchExportFont(spaceGroteskWoff2);
+</script>

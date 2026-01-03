@@ -91,13 +91,11 @@ export const HoustonIcon: Component<HoustonIconProps> = (props) => {
     <div
       class={`overflow-hidden${props.class ? ` ${props.class}` : ""}`}
       style={{ ...props.style, position: "relative" }}>
-      <Show when={showRocket()}>
-        <Icon
-          name="rocket"
-          class="absolute inset-0 h-full w-full transition-opacity duration-500 ease-out"
-          classList={{ "opacity-0": !!houstonUrls() }}
-        />
-      </Show>
+      <Icon
+        name="rocket"
+        class="absolute inset-0 h-full w-full transition-opacity duration-500 ease-out"
+        classList={{ "opacity-0": !!houstonUrls() }}
+      />
       <Show when={houstonUrls()}>
         <div
           class="h-full w-full transition-opacity duration-500 ease-in"
