@@ -60,6 +60,8 @@ export const triggerDownload = () => {
   downloadTrigger.set(Date.now());
 };
 
+export const downloadLoading = atom<boolean>(false);
+
 export const motionEnabled = atom<boolean>(true);
 
 export const prefersReducedMotion = atom<boolean>(false);

@@ -1,7 +1,13 @@
 import type { Component, JSX } from "solid-js";
 import { actions } from "astro:actions";
 import { makeTimer } from "@solid-primitives/timer";
-import { Show, createEffect, createSignal, onMount } from "solid-js";
+import {
+  Show,
+  createEffect,
+  createRoot,
+  createSignal,
+  onMount,
+} from "solid-js";
 import { isServer } from "solid-js/web";
 
 import { darkenHSL } from "~/lib/colorUtils";
@@ -22,8 +28,21 @@ interface HoustonUrls {
 let cachedUrls: HoustonUrls | null = null;
 let fetchPromise: Promise<HoustonUrls | null> | null = null;
 
-const [houstonUrls, setHoustonUrls] = createSignal<HoustonUrls | null>(null);
-const [showRocket, setShowRocket] = createSignal(true);
+let houstonUrls!: () => HoustonUrls | null;
+let setHoustonUrls!: (v: HoustonUrls | null) => void;
+let showRocket!: () => boolean;
+let setShowRocket!: (v: boolean) => void;
+
+createRoot(() => {
+  [houstonUrls, setHoustonUrls] = createSignal<HoustonUrls | null>(null);
+  [showRocket, setShowRocket] = createSignal(true);
+
+  createEffect(() => {
+    if (houstonUrls()) {
+      makeTimer(() => setShowRocket(false), 500, setTimeout);
+    }
+  });
+});
 
 const fetchHoustonImages = () => {
   if (cachedUrls) {
@@ -50,12 +69,6 @@ const fetchHoustonImages = () => {
     });
   }
 };
-
-createEffect(() => {
-  if (houstonUrls()) {
-    makeTimer(() => setShowRocket(false), 500, setTimeout);
-  }
-});
 
 export const HoustonIcon: Component<HoustonIconProps> = (props) => {
   const faceColor = () => props.color && darkenHSL(props.color, 0.4);

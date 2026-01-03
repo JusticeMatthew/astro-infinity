@@ -19,8 +19,10 @@ export const GET: APIRoute = async ({ params, locals }) => {
 
   const headers = new Headers();
   headers.set("Content-Type", "image/png");
-  headers.set("Content-Disposition", `attachment; filename="${key}"`);
-  headers.set("Cache-Control", "public, max-age=31536000, immutable");
+  headers.set(
+    "Content-Disposition",
+    `attachment; filename="astro_infinity-${new Date().toLocaleDateString()}.png"`,
+  );
 
   return new Response(object.body, { headers });
 };

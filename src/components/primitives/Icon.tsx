@@ -19,6 +19,7 @@ import PlayIcon from "~/assets/icons/play.svg?component-solid";
 import RefreshIcon from "~/assets/icons/refresh.svg?component-solid";
 import RocketIcon from "~/assets/icons/rocket.svg?component-solid";
 import SolidIcon from "~/assets/icons/solid.svg?component-solid";
+import SpinnerIcon from "~/assets/icons/spinner.svg?component-solid";
 
 export type IconName =
   | "houston"
@@ -36,6 +37,7 @@ export type IconName =
   | "infinity"
   | "droplet"
   | "eye"
+  | "spinner"
   | "palette";
 
 type StaticIconName = Exclude<IconName, "houston">;
@@ -59,6 +61,7 @@ const ICONS: Record<
   infinity: InfinityIcon,
   eye: EyeIcon,
   palette: PaletteIcon,
+  spinner: SpinnerIcon,
 };
 
 interface IconProps {

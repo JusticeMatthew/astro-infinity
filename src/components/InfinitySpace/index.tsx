@@ -3,7 +3,7 @@ import type { IconPosition } from "~/constants/config";
 import { actions } from "astro:actions";
 import spaceGroteskWoff2 from "@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url";
 import { useStore } from "@nanostores/solid";
-import { toBlob } from "html-to-image";
+import { toPng } from "html-to-image";
 import { For, createEffect, createMemo, createSignal, on } from "solid-js";
 
 import { createAnimationLoop } from "~/lib/composables/createAnimationLoop";
@@ -20,6 +20,7 @@ import {
   INFINITY_ROTATION_DURATION,
   accentHue,
   displayMode as displayModeStore,
+  downloadLoading,
   downloadTrigger,
   hueReady,
   hueSliderActive,
@@ -142,58 +143,63 @@ export const InfinitySpace: Component<InfinitySpaceProps> = (props) => {
     ),
   );
 
-  const handleDownload = async () => {
+  const handleDownload = () => {
     if (!containerRef) return;
 
-    try {
-      const fontResponse = await fetch(spaceGroteskWoff2);
-      const fontBlob = await fontResponse.blob();
-      const fontBase64 = await new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.readAsDataURL(fontBlob);
-      });
+    downloadLoading.set(true);
 
-      const fontEmbedCSS = `
-        @font-face {
-          font-family: 'Space Grotesk Variable';
-          font-style: normal;
-          font-weight: 300 700;
-          src: url(${fontBase64}) format('woff2-variations');
+    // Defer heavy work to let spinner render
+    setTimeout(async () => {
+      try {
+        const fontResponse = await fetch(spaceGroteskWoff2);
+        const fontBlob = await fontResponse.blob();
+        const fontBase64 = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(fontBlob);
+        });
+
+        const fontEmbedCSS = `
+          @font-face {
+            font-family: 'Space Grotesk Variable';
+            font-style: normal;
+            font-weight: 300 700;
+            src: url(${fontBase64}) format('woff2-variations');
+          }
+        `;
+
+        const dataUrl = await toPng(containerRef, {
+          pixelRatio: 2,
+          backgroundColor: "#000000",
+          fontEmbedCSS,
+          filter: (node) => {
+            if (!(node instanceof HTMLElement)) return true;
+            if (node.dataset.excludeFromExport !== undefined) return false;
+            if (node.tagName === "HEADER") return false;
+            return true;
+          },
+        });
+
+        // Convert data URL to array for upload
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
+        const arrayBuffer = await blob.arrayBuffer();
+        const imageData = Array.from(new Uint8Array(arrayBuffer));
+
+        const { data, error } = await actions.uploadExport({ imageData });
+        if (error || !data) {
+          console.error("Failed to upload:", error);
+          return;
         }
-      `;
 
-      const blob = await toBlob(containerRef, {
-        pixelRatio: 2,
-        backgroundColor: "#000000",
-        fontEmbedCSS,
-        filter: (node) => {
-          if (!(node instanceof HTMLElement)) return true;
-          if (node.dataset.excludeFromExport !== undefined) return false;
-          if (node.tagName === "HEADER") return false;
-          return true;
-        },
-      });
-
-      if (!blob) {
-        console.error("Failed to generate image");
-        return;
+        const filename = data.key.split("/").pop();
+        window.location.href = `/api/export/${filename}`;
+      } catch (err) {
+        console.error("Download failed:", err);
+      } finally {
+        downloadLoading.set(false);
       }
-
-      const arrayBuffer = await blob.arrayBuffer();
-      const imageData = Array.from(new Uint8Array(arrayBuffer));
-
-      const { data, error } = await actions.uploadExport({ imageData });
-      if (error || !data) {
-        console.error("Failed to upload:", error);
-        return;
-      }
-
-      const filename = data.key.split("/").pop();
-      window.location.href = `/api/export/${filename}`;
-    } catch (err) {
-      console.error("Download failed:", err);
-    }
+    }, 0);
   };
 
   const layers = createMemo(() =>

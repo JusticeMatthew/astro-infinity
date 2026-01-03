@@ -3,7 +3,7 @@ import { useStore } from "@nanostores/solid";
 import { Show, createSignal, onCleanup, onMount } from "solid-js";
 
 import { useHueColors } from "~/lib/composables/useHueColors";
-import { hueReady, triggerDownload } from "~/lib/store";
+import { downloadLoading, hueReady, triggerDownload } from "~/lib/store";
 
 import { Icon } from "~/primitives/Icon";
 import { IconButton } from "~/interface/IconButton";
@@ -18,6 +18,7 @@ type ExpandedPanel = "hue" | "view" | null;
 export const MobileControlBar: Component = () => {
   const colors = useHueColors();
   const isHueReady = useStore(hueReady);
+  const isLoading = useStore(downloadLoading);
 
   const [expandedPanel, setExpandedPanel] = createSignal<ExpandedPanel>(null);
 
@@ -122,7 +123,11 @@ export const MobileControlBar: Component = () => {
         </div>
 
         <div class="h-full flex-1">
-          <IconButton icon="file-image" onClick={triggerDownload} />
+          <IconButton
+            icon={isLoading() ? "spinner" : "file-image"}
+            onClick={triggerDownload}
+            disabled={isLoading}
+          />
         </div>
       </div>
     </div>
